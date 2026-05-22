@@ -1,0 +1,28 @@
+name: Sincronizzazione dati da Dataverse
+on:
+  repository_dispatch:
+    types: [aggiorna-partite]
+
+permissions:
+  contents: write
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Controlla il codice del repository
+        uses: actions/checkout@v4
+
+      - name: Scrivi i dati nel file dati.json
+        env:
+          PAYLOAD_DATI: ${{ toJson(github.event.client_payload.dati) }}
+        run: |
+          echo "$PAYLOAD_DATI" > dati.json
+
+      - name: Applica le modifiche su GitHub
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add dati.json
+          git commit -m "Aggiornamento automatico risultati da Dataverse" || echo "Nessuna modifica rilevata"
+          git push
