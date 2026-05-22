@@ -111,7 +111,7 @@
 
                     card.innerHTML = `
                         <div class="match-header">
-                            <span>⚽ ${partita.cr2ac_fasetorneo || 'Gara Torneo'}</span>
+                            <span>⚽ ${partita['_cr2ac_fasetorneo_value@OData.Community.Display.V1.FormattedValue'] || 'Gara Torneo'}</span>
                             <span>📅 ${dataFormattata}</span>
                         </div>
                         <div class="match-teams">
