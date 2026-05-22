@@ -3,287 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banda Bassotti F.C. - Sito Ufficiale & LiveScore Badi Cup</title>
+    <title>Banda Bassotti F.C. - Sito Ufficiale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </head>
-<body class="bg-white text-slate-900 font-sans antialiased">
+</head>
+<body class="bg-white text-black font-sans antialiased">
 
-    <nav class="bg-white border-b-4 border-red-600 sticky top-0 z-50 shadow-md">
+    <nav class="bg-white border-b-4 border-red-600 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
             <div class="flex items-center space-x-3">
                 <span class="text-2xl">🦝</span>
-                <span class="font-black text-xl tracking-wider text-red-600">BANDA BASSOTTI F.C.</span>
+                <span class="font-black text-xl tracking-wider text-black">BANDA BASSOTTI <span class="text-red-600">F.C.</span></span>
             </div>
-            <div class="flex space-x-2">
-                <button onclick="switchMainTab('home')" id="btn-nav-home" class="px-4 py-2 rounded-lg font-bold transition bg-blue-700 text-white">
-                    <i class="fas fa-home mr-2"></i>Home
-                </button>
-                <button onclick="switchMainTab('badi')" id="btn-nav-badi" class="px-4 py-2 rounded-lg font-bold transition text-blue-700 hover:bg-blue-50">
-                    <i class="fas fa-trophy mr-2"></i>Badi Summer Cup
-                </button>
+            <div>
+                <a href="badi-cup.html" class="bg-red-600 text-white hover:bg-black px-4 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                    <i class="fas fa-trophy mr-2 text-pink-400"></i>Badi Summer Cup
+                </a>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
-
-        <section id="page-home" class="space-y-12">
-            <div class="bg-white p-8 rounded-2xl border border-blue-700 shadow-lg text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 to-red-400"></div>
-                <h1 class="text-4xl md:text-5xl font-black text-red-600 mb-4 tracking-tight">BANDA BASSOTTI F.C.</h1>
-                <p class="text-slate-600 max-w-xl mx-auto mb-6">Sito ufficiale della squadra. Passione, fango e gol della banda più temuta di Bologna. Promotori attivi dello sport locale.</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                    <div class="bg-white p-12 rounded-xl border border-red-600 flex flex-col justify-center items-center group hover:border-blue-700 transition">
-                        <i class="fas fa-shield-halved text-6xl text-red-600 mb-4 group-hover:scale-110 transition"></i>
-                        <span class="text-slate-500 text-sm">[Placeholder Logo Squadra]</span>
-                    </div>
-                    <div class="bg-white p-12 rounded-xl border border-red-600 flex flex-col justify-center items-center group hover:border-blue-700 transition">
-                        <i class="fas fa-users text-6xl text-blue-700 mb-4 group-hover:scale-110 transition"></i>
-                        <span class="text-slate-500 text-sm">[Placeholder Foto Squadra Ufficiale]</span>
-                    </div>
+    <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
+        
+        <div class="text-center py-6 border-b-2 border-slate-100">
+            <h1 class="text-5xl font-black text-black tracking-tight mb-2">BANDA BASSOTTI F.C.</h1>
+            <p class="text-red-600 font-bold uppercase tracking-widest text-sm">Squadra Ufficiale Calcio a 7 • Bologna</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-3xl mx-auto">
+                <div class="border-2 border-black p-8 rounded-xl flex flex-col justify-center items-center bg-slate-50">
+                    <i class="fas fa-shield-halved text-5xl text-blue-600 mb-2"></i>
+                    <span class="text-xs text-slate-400">[Stemma Squadra]</span>
+                </div>
+                <div class="border-2 border-black p-8 rounded-xl flex flex-col justify-center items-center bg-slate-50">
+                    <i class="fas fa-users text-5xl text-pink-500 mb-2"></i>
+                    <span class="text-xs text-slate-400">[Foto di Gruppo]</span>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-xl border border-red-600 h-fit">
-                    <h2 class="text-xl font-black text-red-600 mb-4 border-b border-red-600 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF</h2>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg"><span class="text-slate-600">Presidente</span><span class="font-bold">Nome Presidente</span></div>
-                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg"><span class="text-slate-600">Vice Presidente</span><span class="font-bold">Nome Vice</span></div>
-                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg"><span class="text-slate-600">Allenatore</span><span class="font-bold">Nome Mister</span></div>
-                    </div>
-                </div>
+        <div class="bg-slate-50 border-l-8 border-blue-600 p-6 rounded-r-xl shadow-sm">
+            <h2 class="text-2xl font-black text-black mb-2"><i class="fas fa-calendar-check text-blue-600 mr-2"></i>IL NOSTRO CAMPIONATO</h2>
+            <p class="text-slate-700 mb-4">La Banda Bassotti partecipa attivamente al **Campionato CSI di Bologna Calcio a 7**, combattendo ogni settimana sul campo con passione e determinazione.</p>
+            <a href="https://www.csibologna.it/attivita-sportive/calcio-a-7/news" target="_blank" class="inline-block bg-blue-600 text-white font-bold px-5 py-2.5 rounded-lg hover:bg-black transition">
+                <i class="fas fa-external-link-alt mr-2"></i>Classifica e Risultati CSI Bologna
+            </a>
+        </div>
 
-                <div class="bg-white p-6 rounded-xl border border-red-600 lg:col-span-2">
-                    <h2 class="text-xl font-black text-blue-700 mb-4 border-b border-blue-700 pb-2"><i class="fas fa-shirt mr-2"></i>LA ROSA (GIOCATORI CSI)</h2>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">1</span> Giocatore A</div>
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">10</span> Giocatore B</div>
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">9</span> Giocatore C</div>
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">4</span> Giocatore D</div>
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">7</span> Giocatore E</div>
-                        <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100 hover:border-pink-300"><span class="text-pink-500 font-mono mr-1">11</span> Giocatore F</div>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="md:col-span-1 border border-slate-200 p-6 rounded-xl space-y-4">
+                <h3 class="text-xl font-black text-red-600 border-b border-red-200 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF</h3>
+                <div><p class="text-xs text-slate-400 font-bold">PRESIDENTE</p><p class="font-bold text-black">Riccardo Cudia</p></div>
+                <div><p class="text-xs text-slate-400 font-bold">ALLENATORE</p><p class="font-bold text-black">Nome Mister</p></div>
+            </div>
+            
+            <div class="md:col-span-2 border border-slate-200 p-6 rounded-xl">
+                <h3 class="text-xl font-black text-black border-b border-slate-200 pb-2 mb-4"><i class="fas fa-shirt text-pink-500 mr-2"></i>LA ROSA</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#1</span> Portiere</div>
+                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#7</span> Attaccante</div>
+                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#10</span> Centrocampista</div>
                 </div>
             </div>
-
-            <div class="bg-white p-6 rounded-xl border border-red-600">
-                <h2 class="text-xl font-black text-red-600 mb-4 border-b border-red-600 pb-2"><i class="fas fa-history mr-2"></i>CAMPIONATI</h2>
-                <ul class="space-y-3">
-                    <li class="flex items-center space-x-3 bg-slate-50 p-3 rounded-lg"><span class="text-blue-700 font-bold">● PARTECIPANTI</span> <span>Campionato CSI Bologna - Calcio a 7</span></li>
-                    <li class="flex items-center space-x-3 bg-slate-50 p-3 rounded-lg"><span class="text-pink-500 font-bold">○ PROMOTORI</span> <span>Badi Summer Cup 2026 (LiveScore Disponibile)</span></li>
-                </ul>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl border border-blue-700 text-center">
-                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">I Nostri Partner</h2>
-                <div class="flex flex-wrap justify-center gap-8 items-center text-slate-600 font-bold">
-                    <span> Sponsor Uno </span> <span> Sponsor Due </span> <span> Sponsor Tre </span>
-                </div>
-            </div>
-        </section>
-
-
-        <section id="page-badi" class="hidden space-y-12">
-            <div class="bg-white p-10 rounded-2xl border-4 border-dashed border-red-600 shadow-xl text-center relative">
-                <h1 class="text-5xl font-black text-red-600 mb-6">BADI SUMMER CUP 2026</h1>
-                <p class="text-slate-700 text-lg max-w-2xl mx-auto mb-10">Il torneo estivo più caldo di Bologna, promosso dalla Banda Bassotti F.C. Scopri squadre, risultati e classifiche live. Sei un capitano? Iscrivi la tua squadra!</p>
-                
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                    <button onclick="switchMainTab('livescore')" class="px-8 py-4 rounded-xl font-black text-xl text-center bg-blue-700 text-white hover:bg-blue-800 transition transform hover:scale-105 shadow-md flex items-center justify-center">
-                        <i class="fas fa-play-circle text-pink-300 mr-3 text-2xl animate-pulse"></i>VEDI LIVESCORE
-                    </button>
-                    <button class="px-8 py-4 rounded-xl font-bold text-center border-2 border-red-600 text-red-600 hover:bg-red-50 transition flex items-center justify-center">
-                        <i class="fas fa-edit mr-3"></i>ISCRIVI LA TUA SQUADRA
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section id="page-livescore" class="hidden space-y-8">
-            <div class="flex flex-wrap bg-white p-2 rounded-xl border-4 border-red-600 gap-2 shadow-lg">
-                <button onclick="switchBadiTab('partite')" id="btn-sub-partite" class="flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition bg-blue-700 text-white">
-                    <i class="fas fa-calendar-days mr-2"></i>PARTITE
-                </button>
-                <button onclick="switchBadiTab('marcatori')" id="btn-sub-marcatori" class="flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition text-blue-700 hover:bg-blue-50">
-                    <i class="fas fa-ranking-star mr-2"></i>Classifica Marcatori
-                </button>
-                <button onclick="switchBadiTab('classifiche')" id="btn-sub-classifiche" class="flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition text-blue-700 hover:bg-blue-50">
-                    <i class="fas fa-table-list mr-2"></i>Classifica Torneo
-                </button>
-            </div>
-
-            <div id="sub-partite" class="space-y-4">
-                <div class="flex justify-between items-center border-b-2 border-red-600 pb-2">
-                    <h2 class="text-2xl font-black text-red-600"><i class="fas fa-play text-pink-500 mr-2 animate-pulse"></i>LIVESCORE PARTITE</h2>
-                    <span id="live-indicator" class="text-xs bg-slate-100 text-slate-500 px-3 py-1 rounded-full flex items-center">
-                        <span class="w-2 h-2 bg-pink-500 rounded-full inline-block mr-2 animate-pulse"></span>In Diretta da Dataverse
-                    </span>
-                </div>
-                <div id="error-message" class="hidden bg-white/50 border border-red-600 text-red-600 p-4 rounded-xl text-center"></div>
-                <div id="tabellone-partite" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    </div>
-            </div>
-
-            <div id="sub-marcatori" class="hidden bg-white p-6 rounded-xl border-4 border-blue-700 shadow-md">
-                <h2 class="text-2xl font-black text-blue-700 mb-6 border-b-2 border-blue-700 pb-2"><i class="fas fa-fire mr-2"></i>Classifica Marcatori</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-red-600 text-slate-500 text-sm uppercase">
-                                <th class="pb-3 pl-4 w-16">Pos</th>
-                                <th class="pb-3">Giocatore</th>
-                                <th class="pb-3">Squadra</th>
-                                <th class="pb-3 text-right pr-4">Gol Totali</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50 transition border-l-4 border-transparent hover:border-pink-500">
-                                <td class="py-3 pl-4 font-mono font-bold text-red-600">1</td>
-                                <td class="py-3 font-bold">Bomber Rossi</td>
-                                <td class="py-3 text-slate-500">Squadra Fittizia 1</td>
-                                <td class="py-3 text-right pr-4 font-mono text-xl text-red-600 font-bold">8</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition border-l-4 border-transparent hover:border-pink-500">
-                                <td class="py-3 pl-4 font-mono font-bold text-slate-500">2</td>
-                                <td class="py-3 font-bold">Capitano Verdi</td>
-                                <td class="py-3 text-slate-500">Squadra Fittizia B</td>
-                                <td class="py-3 text-right pr-4 font-mono text-xl text-slate-400 font-bold">5</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="sub-classifiche" class="hidden space-y-6 bg-white p-6 rounded-xl border-4 border-red-600 shadow-md">
-                <div class="flex justify-center space-x-4 border-b border-slate-200 pb-4">
-                    <button onclick="switchClassificaView('gironi')" id="btn-view-gironi" class="px-4 py-2 font-bold rounded-lg border-2 border-red-600/30 bg-red-600/10 text-red-600 flex items-center">
-                        <i class="fas fa-list mr-2"></i>1. Fase a Gironi
-                    </button>
-                    <button onclick="switchClassificaView('eliminazione')" id="btn-view-eliminazione" class="px-4 py-2 font-bold rounded-lg border-2 border-transparent text-slate-500 hover:text-red-600 flex items-center">
-                        <i class="fas fa-crown mr-2"></i>2. Fase a Eliminazione Diretta
-                    </button>
-                </div>
-
-                <div id="view-classifica-gironi" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-5 rounded-xl border border-red-600">
-                        <h3 class="text-lg font-black text-blue-700 mb-4 flex justify-between"><span>GIRONE A</span><span class="text-xs text-slate-500 font-normal">Fase Campionato</span></h3>
-                        <table class="w-full text-left text-sm">
-                            <tr class="border-b border-red-600 text-slate-500 font-bold"><td class="pb-2">Squadra</td><td class="pb-2 text-center">Punti</td></tr>
-                            <tr class="py-2 border-b border-slate-100 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-pink-500"><td>Squadra 1</td><td class="text-center font-bold text-red-600">6</td></tr>
-                            <tr class="py-2 border-b border-slate-100 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-pink-500"><td>Squadra 2</td><td class="text-center font-bold">3</td></tr>
-                            <tr class="py-2 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-pink-500"><td>Squadra 3</td><td class="text-center font-bold">0</td></tr>
-                        </table>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-red-600">
-                        <h3 class="text-lg font-black text-pink-500 mb-4 flex justify-between"><span>GIRONE B</span><span class="text-xs text-slate-500 font-normal">Fase Campionato</span></h3>
-                        <table class="w-full text-left text-sm">
-                            <tr class="border-b border-red-600 text-slate-500 font-bold"><td class="pb-2">Squadra</td><td class="pb-2 text-center">Punti</td></tr>
-                            <tr class="py-2 border-b border-slate-100 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-blue-700"><td>Squadra 4</td><td class="text-center font-bold text-pink-500">9</td></tr>
-                            <tr class="py-2 border-b border-slate-100 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-blue-700"><td>Squadra 5</td><td class="text-center font-bold">4</td></tr>
-                            <tr class="py-2 hover:bg-slate-50 transition border-l-2 border-transparent hover:border-blue-700"><td>Squadra 6</td><td class="text-center font-bold">0</td></tr>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="view-classifica-eliminazione" class="hidden bg-white p-6 rounded-xl border border-blue-700 overflow-x-auto text-slate-950 shadow-inner">
-                    <h3 class="text-xl font-black text-blue-700 text-center mb-8 border-b-2 border-blue-700 pb-2">TABELLONE FASE FINALE</h3>
-                    
-                    <div class="flex justify-between items-center min-w-[700px] space-x-4 py-4">
-                        
-                        <div class="flex-1 flex flex-col justify-around h-64 space-y-8">
-                            <div class="bg-white border-2 border-blue-700 rounded-lg p-3 shadow-md space-y-1 text-blue-700 font-bold hover:bg-blue-50 transition">
-                                <div class="text-xs text-slate-500 font-black tracking-widest">SEMIFINALE 1</div>
-                                <div class="flex justify-between text-sm font-black border-pink-500 border-b-2"><span>Squadra 1</span><span>4</span></div>
-                                <div class="flex justify-between text-sm text-blue-700 opacity-60"><span>Squadra 2</span><span>0</span></div>
-                            </div>
-                            <div class="bg-white border-2 border-blue-700 rounded-lg p-3 shadow-md space-y-1 hover:bg-blue-50 transition">
-                                <div class="text-xs text-slate-500 font-black tracking-widest">SEMIFINALE 2</div>
-                                <div class="flex justify-between text-sm text-blue-700 opacity-60"><span>Squadra 3</span><span>1</span></div>
-                                <div class="flex justify-between text-sm font-black text-blue-700 border-pink-500 border-b-2"><span>Squadra 4</span><span>3</span></div>
-                            </div>
-                        </div>
-
-                        <div class="w-8 flex flex-col justify-around h-64 text-pink-500 animate-pulse text-center">
-                            <div><i class="fas fa-chevron-right text-lg"></i></div>
-                            <div><i class="fas fa-chevron-right text-lg"></i></div>
-                        </div>
-
-                        <div class="flex-1 flex flex-col justify-center h-64">
-                            <div class="bg-white border-4 border-red-600 rounded-xl p-4 shadow-xl space-y-2 transform scale-105 transition-all hover:shadow-2xl">
-                                <div class="text-center text-xs font-black text-red-600 tracking-wider"><i class="fas fa-crown mr-1 text-pink-500 animate-pulse"></i> FINALISSIMA <i class="fas fa-crown mr-1 text-pink-500 animate-pulse"></i></div>
-                                <div class="space-y-1 font-bold text-red-600">
-                                    <div class="flex justify-between font-black text-base border-pink-500 border-b-2"><span>Squadra 1</span><span>-</span></div>
-                                    <div class="flex justify-between font-black text-base opacity-60"><span>Squadra 4</span><span>-</span></div>
-                                </div>
-                                <div class="text-[10px] text-center text-slate-500">Da disputare - LiveScore Disponibile</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <footer class="bg-white border-t-2 border-red-600 py-6 mt-12 text-center text-sm text-slate-600">
-        <p>&copy; 2026 Banda Bassotti F.C. • Sviluppato live con Dataverse, Power Automate e GitHub Actions. Livestream Badi Summer Cup.</p>
+    <footer class="text-center py-8 border-t border-slate-100 text-xs text-slate-400 mt-20">
+        &copy; 2026 Banda Bassotti F.C. • Promotori ufficiali dello sport bolognese.
     </footer>
 
-    <script>
-        // Cambia la scheda principale (Home vs Badi Cup vs LiveScore)
-        function switchMainTab(tabId) {
-            document.getElementById('page-home').classList.add('hidden');
-            document.getElementById('page-badi').classList.add('hidden');
-            document.getElementById('page-livescore').classList.add('hidden');
-            
-            // Ripulisce i pulsanti di navigazione principali
-            document.getElementById('btn-nav-home').className = "px-4 py-2 rounded-lg font-bold transition text-blue-700 hover:bg-blue-50";
-            document.getElementById('btn-nav-badi').className = "px-4 py-2 rounded-lg font-bold transition text-blue-700 hover:bg-blue-50";
-
-            // Attiva la pagina corretta
-            document.getElementById(`page-${tabId}`).classList.remove('hidden');
-            
-            // Evidenzia il pulsante principale (se esiste)
-            const activeNavBtn = document.getElementById(`btn-nav-${tabId}`);
-            if(activeNavBtn) {
-                activeNavBtn.className = "px-4 py-2 rounded-lg font-bold transition bg-blue-700 text-white";
-            }
-
-            // Attiva/disattiva l'integrazione Dataverse Live se necessario
-            if (tabId === 'livescore') {
-                caricaPartite(); // Prima chiamata istantanea
-                attivaIntegrazioneLive();
-            } else {
-                disattivaIntegrazioneLive();
-            }
-        }
-
-        // Cambia la sotto-scheda interna di LiveScore (MANUALE)
-        function switchBadiTab(subTabId) {
-            document.getElementById('sub-partite').classList.add('hidden');
-            document.getElementById('sub-marcatori').classList.add('hidden');
-            document.getElementById('sub-classifiche').classList.add('hidden');
-            
-            // Ripulisce i pulsanti di sotto-navigazione
-            document.getElementById('btn-sub-partite').className = "flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition text-blue-700 hover:bg-blue-50";
-            document.getElementById('btn-sub-marcatori').className = "flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition text-blue-700 hover:bg-blue-50";
-            document.getElementById('btn-sub-classifiche').className = "flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition text-blue-700 hover:bg-blue-50";
-
-            // Attiva la sotto-scheda corretta
-            document.getElementById(`sub-${subTabId}`).classList.remove('hidden');
-            
-            // Evidenzia il pulsante di sotto-navigazione
-            document.getElementById(`btn-sub-${subTabId}`).className = "flex-1 min-w-[150px] px-4 py-2.5 rounded-lg font-bold text-center transition bg-blue-700 text-white shadow-inner";
-        }
-
-        // Cambia la visualizzazione delle classifiche (Gironi vs Eliminazione) (MANUALE)
-        function switchClassificaView(viewId) {
-            document.getElementById('view-classifica-gironi').classList.add('hidden');
-            document.getElementById('view-classifica-eliminazione').classList.add('hidden');
-            
-            // Ripulisce i pulsanti di view interna
-            document.getElementById('btn-view-gironi').className = "px-4 py-2 font-bold rounded-lg border-2 border-transparent text
+</body>
+</html>
