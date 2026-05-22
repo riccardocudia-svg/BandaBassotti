@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risultati Torneo - BandaBassotti</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        #partite-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .match-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #3498db;
+            transition: transform 0.2s;
+        }
+        .match-card:hover {
+            transform: translateY(-2px);
+        }
+        .match-header {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .team-name {
+            width: 40%;
+        }
+        .team-name.home { text-align: left; }
+        .team-name.away { text-align: right; }
+        .score {
+            background: #2c3e50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1em;
+            min-width: 40px;
+            text-align: center;
+        }
+        .loading {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🏆 Tabellone Risultati Live</h1>
+
+    <div id="partite-container">
+        <p class="loading">Caricamento risultati in corso...</p>
+    </div>
+
+    <script>
+        async function caricaPartite() {
+            try {
+                // Preleva il file JSON generato automaticamente dall'automazione
+                const response = await fetch('dati.json');
+                const data = await response.json();
+                
+                // Estrae l'array delle partite (mappato come "dati" su Power Automate)
+                const partite = data.dati || [];
+                const container = document.getElementById('partite-container');
+                container.innerHTML = '';
+
+                if (partite.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;">Nessuna partita disputata al momento.</p>';
+                    return;
+                }
+
+                // Ordina o cicla i dati per appenderli nella pagina
+                partite.forEach(partita => {
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+                    
+                    // Formattazione della data pulita
+                    const dataFormattata = partita.cr2ac_data ? new Date(partita.cr2ac_data).toLocaleDateString('it-IT') : 'Da definire';
+                    
+                    // Gestione dei gol nulli o non ancora inseriti
+                    const golCasa = partita.cr2ac_gol_casa !== null ? partita.cr2ac_gol_casa : '-';
+                    const golTrasferta = partita.cr2ac_gol_trasferta !== null ? partita.cr2ac_gol_trasferta : '-';
+
+                    card.innerHTML = `
+                        <div class="match-header">
+                            <span>⚽ ${partita.cr2ac_fasetorneo || 'Gara Torneo'}</span>
+                            <span>📅 ${dataFormattata}</span>
+                        </div>
+                        <div class="match-teams">
+                            <span class="team-name home">${partita.cr2ac_casa || 'Squadra Casa'}</span>
+                            <span class="score">${golCasa} - ${golTrasferta}</span>
+                            <span class="team-name away">${partita.cr2ac_trasferta || 'Squadra Ospite'}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Errore nel recupero del JSON:", error);
+                document.getElementById('partite-container').innerHTML = 
+                    '<p style="color:red; text-align:center;">Impossibile caricare i dati in questo momento.</p>';
+            }
+        }
+
+        // Avvia la funzione al caricamento della pagina
+        window.onload = caricaPartite;
+    </script>
+</body>
+</html>
