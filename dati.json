@@ -112,7 +112,7 @@
     "cr2ac_trasferta": "squadra4"
   },
   {
-    "@odata.etag": "W/\"3683848\"",
+    "@odata.etag": "W/\"3683854\"",
     "_cr2ac_fasetorneo_value": "162e17e8-78cd-442c-a71a-cd186223bb97",
     "_cr2ac_fasetorneo_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "cr2ac_FASETORNEO",
     "_cr2ac_fasetorneo_value@Microsoft.Dynamics.CRM.lookuplogicalname": "cr2ac_fasitorneo",
@@ -120,6 +120,10 @@
     "cr2ac_casa": "squadra3",
     "cr2ac_data": "2026-08-28T16:00:00Z",
     "cr2ac_data@OData.Community.Display.V1.FormattedValue": "28/08/2026 16:00",
+    "cr2ac_gol_casa": 0,
+    "cr2ac_gol_casa@OData.Community.Display.V1.FormattedValue": "0",
+    "cr2ac_gol_trasferta": 1,
+    "cr2ac_gol_trasferta@OData.Community.Display.V1.FormattedValue": "1",
     "cr2ac_partiteid": "a4406eb5-c355-f111-a825-000d3ab7304d",
     "cr2ac_trasferta": "squadra6"
   }
