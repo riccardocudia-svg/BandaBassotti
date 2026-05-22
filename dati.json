@@ -1,6 +1,6 @@
 [
   {
-    "@odata.etag": "W/\"3683912\"",
+    "@odata.etag": "W/\"3683920\"",
     "_cr2ac_fasetorneo_value": "86cd0f73-7ea4-44fb-b608-915290892b80",
     "_cr2ac_fasetorneo_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "cr2ac_FASETORNEO",
     "_cr2ac_fasetorneo_value@Microsoft.Dynamics.CRM.lookuplogicalname": "cr2ac_fasitorneo",
@@ -10,8 +10,8 @@
     "cr2ac_data@OData.Community.Display.V1.FormattedValue": "25/08/2026 10:00",
     "cr2ac_gol_casa": 4,
     "cr2ac_gol_casa@OData.Community.Display.V1.FormattedValue": "4",
-    "cr2ac_gol_trasferta": 2,
-    "cr2ac_gol_trasferta@OData.Community.Display.V1.FormattedValue": "2",
+    "cr2ac_gol_trasferta": 3,
+    "cr2ac_gol_trasferta@OData.Community.Display.V1.FormattedValue": "3",
     "cr2ac_partiteid": "ab5d5679-6b3d-f111-88b3-000d3ab6703c",
     "cr2ac_trasferta": "squadra6"
   },
