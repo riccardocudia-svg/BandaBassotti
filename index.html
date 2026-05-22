@@ -41,33 +41,82 @@
             </div>
         </div>
 
-        <div class="bg-slate-50 border-l-8 border-blue-600 p-6 rounded-r-xl shadow-sm">
-            <h2 class="text-2xl font-black text-black mb-2"><i class="fas fa-calendar-check text-blue-600 mr-2"></i>IL NOSTRO CAMPIONATO</h2>
-            <p class="text-slate-700 mb-4">La Banda Bassotti partecipa attivamente al **Campionato CSI di Bologna Calcio a 7**, combattendo ogni settimana sul campo con passione e determinazione.</p>
-            <a href="https://www.csibologna.it/attivita-sportive/calcio-a-7/news" target="_blank" class="inline-block bg-blue-600 text-white font-bold px-5 py-2.5 rounded-lg hover:bg-black transition">
-                <i class="fas fa-external-link-alt mr-2"></i>Classifica e Risultati CSI Bologna
-            </a>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-2xl border-2 border-black shadow-sm">
+            
+            <div class="md:col-span-1 space-y-3 md:border-r border-slate-200 md:pr-6 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-black text-black tracking-tight uppercase mb-1"><i class="fas fa-address-card text-red-600 mr-2"></i>Chi Siamo</h2>
+                    <p class="text-sm font-bold text-slate-700">Società sportive affiliate al CSI</p>
+                </div>
+                <div class="pt-4">
+                    <a href="https://tesseramento.csi-net.it/S_Accesso.asp" target="_blank" class="inline-flex items-center text-xs bg-black text-white font-bold px-4 py-2.5 rounded-lg hover:bg-red-600 transition shadow w-full justify-center sm:w-auto">
+                        <i class="fas fa-lock mr-2 text-yellow-400"></i>Accesso Area Riservata
+                    </a>
+                </div>
+            </div>
+            
+            <div class="md:col-span-2 space-y-4 md:pl-2">
+                <h2 class="text-xl font-black text-black tracking-tight uppercase"><i class="fas fa-trophy text-blue-600 mr-2"></i>Iscrizioni Campionati & Eventi</h2>
+                
+                <div class="space-y-3">
+                    <div class="border border-slate-200 rounded-xl bg-white p-3 hover:shadow-md transition">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">📅</span>
+                                <div>
+                                    <h4 class="font-black text-sm text-black">Stagione 2024/25</h4>
+                                    <p class="text-xs text-slate-500 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                                </div>
+                            </div>
+                            <button onclick="togglePannelloStats()" class="bg-slate-100 hover:bg-slate-200 text-black border border-slate-300 font-bold text-xs px-4 py-2 rounded-lg flex items-center transition whitespace-nowrap">
+                                <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i> Dati e Statistiche <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="pannello-stats-2425" class="hidden pt-4 border-t border-slate-100 mt-3">
+                            <div id="tabella-stats-container" class="overflow-x-auto">
+                                <p class="text-xs text-slate-400 italic">Lettura file statistiche in corso...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl bg-white p-3 opacity-70">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">⏳</span>
+                                <div>
+                                    <h4 class="font-black text-sm text-slate-700">Stagione 2025/26</h4>
+                                    <p class="text-xs text-slate-400 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                                </div>
+                            </div>
+                            <span class="bg-slate-100 border text-slate-400 text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full whitespace-nowrap">
+                                Senza Dati
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="md:col-span-1 border border-slate-200 p-6 rounded-xl space-y-4 h-fit">
-                <h3 class="text-xl font-black text-red-600 border-b border-red-200 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF</h3>
+                <h3 class="text-xl font-black text-red-600 border-b border-red-200 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF ATTUALE</h3>
                 <div>
-                    <p class="text-xs text-slate-400 font-bold">PRESIDENTE (PRS)</p>
-                    <p id="staff-presidente" class="font-bold text-black italic text-lg">Caricamento...</p>
+                    <p class="text-xs text-slate-400 font-bold">PRESIDENTE</p>
+                    <p id="staff-presidente" class="font-bold text-black text-lg">Caricamento...</p>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-400 font-bold">VICEPRESIDENTE (VPS)</p>
+                    <p class="text-xs text-slate-400 font-bold">VICEPRESIDENTE</p>
                     <p id="staff-vicepresidente" class="font-bold text-black text-base">Caricamento...</p>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-400 font-bold">ALLENATORE (DIT)</p>
+                    <p class="text-xs text-slate-400 font-bold">ALLENATORE (MISTER)</p>
                     <p id="staff-allenatore" class="font-bold text-black text-base">Caricamento...</p>
                 </div>
             </div>
             
             <div class="md:col-span-2 border border-slate-200 p-6 rounded-xl">
-                <h3 class="text-xl font-black text-black border-b border-slate-200 pb-2 mb-4"><i class="fas fa-shirt text-pink-500 mr-2"></i>LA ROSA</h3>
+                <h3 class="text-xl font-black text-black border-b border-slate-200 pb-2 mb-4"><i class="fas fa-shirt text-pink-500 mr-2"></i>LA ROSA ATTUALE</h3>
                 <div id="container-rosa" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <p class="text-sm text-slate-400 col-span-full">Lettura elenco tesserati in corso...</p>
                 </div>
@@ -77,84 +126,189 @@
     </main>
 
     <footer class="text-center py-8 border-t border-slate-100 text-xs text-slate-400 mt-20">
-        &copy; 2026 Banda Bassotti F.C. • Sincronizzato con l'elenco ufficiale tesserati CSI Bologna.
+        &copy; 2026 Banda Bassotti F.C. • Portale Statistiche integrato.
     </footer>
 
     <script>
+        // 1. CARICAMENTO ELENCO TESSERATI ATTUALI (Dal nuovo file con separatore ";")
         function caricaTesseratiUfficiali() {
-            // Utilizziamo il cache-buster (?_t=) per forzare l'aggiornamento quando carichi un nuovo file
             fetch('Elenco_Tesserati.csv?_t=' + Date.now())
                 .then(response => {
-                    if (!response.ok) throw new Error("File Elenco_Tesserati.csv non trovato nella cartella.");
+                    if (!response.ok) throw new Error("File Elenco_Tesserati.csv non trovato.");
                     return response.text();
                 })
                 .then(data => {
-                    // Divide il file in righe
                     const righe = data.split(/\r?\n/);
                     if (righe.length < 2) return;
 
                     let staff = { presidente: 'Non definito', vicepresidente: 'Non definito', allenatore: 'Non definito' };
                     let elencoGiocatori = [];
 
-                    // Partiamo da i = 1 per saltare la riga dei titoli (Tessera, Cognome, Nome...)
+                    // Ciclo saltando l'intestazione
                     for (let i = 1; i < righe.length; i++) {
-                        // Il file esportato dal CSI usa le tabulazioni (\t) come separatore
-                        const colonne = righe[i].split('\t');
-                        if (colonne.length < 5) continue;
+                        const colonne = righe[i].split(';');
+                        if (colonne.length < 4) continue;
 
-                        const cognome = colonne[1]?.trim();
-                        const nome = colonne[2]?.trim();
-                        const qualifica = colonne[4]?.trim().toUpperCase();
+                        const cognome = colonne[0]?.trim();
+                        const nome = colonne[1]?.trim();
+                        const numeroMaglia = colonne[2]?.trim() || '';
+                        const nomeMaglia = colonne[3]?.trim() || '';
+                        const dirigenza = colonne[5]?.trim() || ''; // Colonna Dirigenza
 
                         if (!nome || !cognome) continue;
                         
-                        // Formattiamo il nome portando la prima lettera maiuscola e il resto minuscolo per estetica
                         const formattaNome = (str) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
                         const nomeCompleto = `${formattaNome(nome)} ${formattaNome(cognome)}`;
 
-                        // 1. Smistamento Staff in base alle sigle CSI
-                        if (qualifica === 'PRS') staff.presidente = nomeCompleto;
-                        if (qualifica === 'VPS') staff.vicepresidente = nomeCompleto;
-                        if (qualifica === 'DIT') staff.allenatore = nomeCompleto;
+                        // Smistamento dello Staff in base alla colonna Dirigenza
+                        const dirigenzaLower = dirigenza.toLowerCase();
+                        if (dirigenzaLower === 'presidente') staff.presidente = nomeCompleto;
+                        if (dirigenzaLower === 'vicepresidente') staff.vicepresidente = nomeCompleto;
+                        if (dirigenzaLower === 'tecnico' || dirigenzaLower === 'allenatore') staff.allenatore = nomeCompleto;
 
-                        // 2. Regola della Rosa: Tutti tranne il Tecnico Allenatore (DIT) giocano
-                        if (qualifica !== 'DIT') {
-                            elencoGiocatori.push(nomeCompleto);
+                        // Regola: Tutti tranne il Tecnico sono giocatori
+                        if (dirigenzaLower !== 'tecnico' && dirigenzaLower !== 'allenatore') {
+                            elencoGiocatori.push({
+                                nomeCompleto: nomeCompleto,
+                                numero: numeroMaglia,
+                                nickname: nomeMaglia
+                            });
                         }
                     }
 
-                    // Ordiniamo i giocatori alfabeticamente per cognome/nome
-                    elencoGiocatori.sort();
+                    // Ordiniamo la rosa alfabeticamente per cognome/nome
+                    elencoGiocatori.sort((a, b) => a.nomeCompleto.localeCompare(b.nomeCompleto));
 
-                    // Aggiorniamo lo Staff nella pagina
+                    // Inserimento dati dello Staff nella pagina
                     document.getElementById('staff-presidente').textContent = staff.presidente;
                     document.getElementById('staff-vicepresidente').textContent = staff.vicepresidente;
                     document.getElementById('staff-allenatore').textContent = staff.allenatore;
 
-                    // Aggiorniamo la Rosa dei giocatori nella pagina
+                    // Costruzione grafica della Rosa
                     const container = document.getElementById('container-rosa');
-                    container.innerHTML = ''; // Svuota il testo di caricamento
+                    container.innerHTML = '';
 
-                    elencoGiocatori.forEach((giocatore, index) => {
+                    elencoGiocatori.forEach(giocatore => {
                         const div = document.createElement('div');
                         div.className = "p-2.5 bg-slate-50 rounded-lg border border-slate-100 flex items-center hover:border-red-600 hover:bg-white transition-all shadow-sm font-medium";
-                        // Mostra un numero progressivo (#1, #2...) accanto al nome
-                        div.innerHTML = `<span class="text-red-600 font-mono font-bold mr-2 text-sm">#${index + 1}</span> <span class="text-slate-900">${giocatore}</span>`;
+                        
+                        // Gestione grafica del numero di maglia
+                        const numeroDisplay = giocatore.numero && giocatore.numero !== '-' ? `#${giocatore.numero}` : '#--';
+                        
+                        // Se presente un nome maglia personalizzato lo mostriamo tra virgolette
+                        const nickDisplay = giocatore.nickname && giocatore.nickname !== '-' ? `<span class="text-xs text-slate-400 font-normal italic ml-1.5">"${giocatore.nickname}"</span>` : '';
+
+                        div.innerHTML = `
+                            <span class="text-red-600 font-mono font-black mr-3 text-sm bg-red-50 px-2 py-0.5 rounded border border-red-100 min-w-[2.5rem] text-center">${numeroDisplay}</span>
+                            <span class="text-slate-900">${giocatore.nomeCompleto} ${nickDisplay}</span>
+                        `;
                         container.appendChild(div);
                     });
                 })
                 .catch(err => {
                     console.error(err);
-                    document.getElementById('container-rosa').innerHTML = `
-                        <p class="text-sm text-red-500 col-span-full border border-dashed border-red-300 p-4 rounded-lg bg-red-50">
-                            <i class="fas fa-triangle-exclamation mr-2"></i>Impossibile caricare la rosa. Verifica che il file <strong>Elenco_Tesserati.csv</strong> sia caricato correttamente su GitHub.
+                    document.getElementById('container-rosa').innerHTML = `<p class="text-xs text-red-500 col-span-full">Errore nel caricamento della Rosa corrente.</p>`;
+                });
+        }
+
+        // 2. GENERATORE DI TABELLA STATISTICHE 2024/25 (Dal file BB1°.csv)
+        function generaStatistiche2425() {
+            fetch('BB1°.csv?_t=' + Date.now())
+                .then(res => {
+                    if(!res.ok) throw new Error("File BB1°.csv non trovato.");
+                    return res.text();
+                })
+                .then(data => {
+                    const righe = data.split(/\r?\n/);
+                    if(righe.length < 2) return;
+
+                    let htmlTabella = `
+                        <div class="border border-black rounded-lg overflow-hidden bg-white">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900 text-white uppercase font-black tracking-wider text-[10px]">
+                                        <th class="p-2 text-center border-r border-slate-800">N°</th>
+                                        <th class="p-2 border-r border-slate-800">Giocatore</th>
+                                        <th class="p-2 text-center border-r border-slate-800">Ruolo</th>
+                                        <th class="p-2 text-center bg-black border-r border-slate-800">Pres.</th>
+                                        <th class="p-2 text-center text-red-400 bg-red-950 border-r border-slate-800">Gol</th>
+                                        <th class="p-2 text-center text-blue-400 bg-blue-950 border-r border-slate-800">Ast</th>
+                                        <th class="p-2 text-center text-yellow-400"><i class="fas fa-square"></i></th>
+                                        <th class="p-2 text-center text-red-500"><i class="fas fa-square"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 font-semibold text-slate-900">
+                    `;
+
+                    for(let i = 1; i < righe.length; i++) {
+                        const colonne = righe[i].split(';');
+                        if(colonne.length < 12) continue;
+
+                        const cognome = colonne[0]?.trim();
+                        const nome = colonne[1]?.trim();
+                        const numero = colonne[2]?.trim() || '-';
+                        const nomeMaglia = colonne[3]?.trim();
+                        const ruolo = colonne[4]?.trim() || '-';
+                        const presenze = colonne[7]?.trim() || '0';
+                        const goals = colonne[8]?.trim() || '0';
+                        const assist = colonne[9]?.trim() || '0';
+                        const gialli = colonne[10]?.trim() || '0';
+                        const rossi = colonne[11]?.trim() || '0';
+
+                        if(!nome || !cognome) continue;
+
+                        const nomeVisualizzato = (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia : `${nome} ${cognome}`;
+
+                        htmlTabella += `
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-2 text-center font-mono font-bold text-slate-400 border-r bg-slate-50">${numero}</td>
+                                <td class="p-2 font-bold text-black border-r">${nomeVisualizzato}</td>
+                                <td class="p-2 text-center font-bold text-[10px] border-r"><span class="bg-slate-100 border px-1.5 py-0.5 rounded text-slate-600">${ruolo}</span></td>
+                                <td class="p-2 text-center bg-slate-50 font-black text-sm border-r">${presenze}</td>
+                                <td class="p-2 text-center text-red-600 font-black text-sm bg-red-50/50 border-r">${goals}</td>
+                                <td class="p-2 text-center text-blue-600 font-black text-sm bg-blue-50/50 border-r">${assist}</td>
+                                <td class="p-2 text-center font-mono text-yellow-600">${gialli}</td>
+                                <td class="p-2 text-center font-mono text-red-600">${rossi}</td>
+                            </tr>
+                        `;
+                    }
+
+                    htmlTabella += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    document.getElementById('tabella-stats-container').innerHTML = htmlTabella;
+                })
+                .catch(err => {
+                    document.getElementById('tabella-stats-container').innerHTML = `
+                        <p class="text-xs text-red-500 font-bold p-2 border border-red-200 bg-red-50 rounded">
+                            Impossibile caricare le statistiche.
                         </p>`;
                 });
         }
 
-        // Avvia la lettura automatica appena la pagina si apre
-        window.onload = caricaTesseratiUfficiali;
-    </script>
+        function togglePannelloStats() {
+            const pannello = document.getElementById('pannello-stats-2425');
+            const freccia = document.getElementById('freccia-stats');
+            
+            if(pannello.classList.contains('hidden')) {
+                pannello.classList.remove('hidden');
+                freccia.className = "fas fa-chevron-up ml-2 text-blue-600";
+                if(document.getElementById('tabella-stats-container').innerHTML.includes('Lettura file')) {
+                    generaStatistiche2425();
+                }
+            } else {
+                pannello.classList.add('hidden');
+                freccia.className = "fas fa-chevron-down ml-2";
+            }
+        }
 
+        // Avvio automatico al caricamento del DOM
+        window.addEventListener('DOMContentLoaded', () => {
+            caricaTesseratiUfficiali();
+        });
+    </script>
 </body>
 </html>
