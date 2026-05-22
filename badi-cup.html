@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badi Summer Cup 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-white text-black font-sans antialiased">
+
+    <nav class="bg-white border-b-4 border-red-600 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="text-slate-500 hover:text-black font-bold text-sm"><i class="fas fa-arrow-left mr-2"></i>Torna alla Home</a>
+            </div>
+            <span class="font-black text-red-600 tracking-wider">BADI SUMMER CUP</span>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-10 space-y-12">
+
+        <div class="text-center space-y-4">
+            <div class="inline-block bg-pink-100 text-pink-600 px-4 py-1 rounded-full text-xs font-black tracking-widest uppercase">Torneo Estivo 2026</div>
+            <h1 class="text-4xl md:text-5xl font-black text-black">BADI SUMMER CUP</h1>
+            <p class="text-slate-600 text-lg max-w-xl mx-auto">
+                Il grande evento calcistico dell'estate bolognese. Il torneo è ideato, organizzato e **promosso con orgoglio dalla Banda Bassotti F.C.**
+            </p>
+
+            <div class="pt-6">
+                <a href="livescore.html" class="inline-flex items-center bg-blue-600 hover:bg-black text-white font-black text-xl px-10 py-5 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+                    <i class="fas fa-satellite-dish mr-3 text-pink-400 animate-pulse text-2xl"></i> ACCEDI AL LIVESCORE LIVE
+                </a>
+                <p class="text-xs text-slate-400 mt-2">Risultati in tempo reale, Classifiche Gironi, Marcatori e Playoff</p>
+            </div>
+        </div>
+
+        <div class="border-2 border-black p-6 md:p-8 rounded-2xl bg-slate-50 shadow-inner">
+            <h2 class="text-2xl font-black text-black mb-4 border-b border-black pb-2"><i class="fas fa-edit text-red-600 mr-2"></i>ISCRIZIONE TORNEO</h2>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nome Squadra</label>
+                    <input type="text" placeholder="Es. I Rossi del Savena" class="w-full border-2 border-slate-300 rounded-lg p-2.5 focus:border-red-600 outline-none font-medium bg-white" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Carica Distinta Squadra (.pdf, .jpg)</label>
+                    <input type="file" accept=".pdf,.jpg,.png" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-sm" required>
+                </div>
+                <button type="submit" class="w-full bg-black text-white hover:bg-red-600 font-bold py-3 rounded-lg transition">
+                    Procedi al pagamento con PayPal
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+</body>
+</html>
