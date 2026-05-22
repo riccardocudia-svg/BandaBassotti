@@ -105,7 +105,8 @@
 
         // Funzione asincrona di recupero dati da Dataverse (tramite il tuo dati.json)
         function recuperoDataverse() {
-            fetch('dati.json')
+            // Il pezzo '?_t=' + Date.now() inganna il browser costringendolo a scaricare la versione più recente in tempo reale
+            fetch('dati.json?_t=' + Date.now())
                 .then(res => {
                     if(!res.ok) throw new Error("File dati.json non trovato.");
                     return res.json();
