@@ -50,18 +50,26 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="md:col-span-1 border border-slate-200 p-6 rounded-xl space-y-4">
+            <div class="md:col-span-1 border border-slate-200 p-6 rounded-xl space-y-4 h-fit">
                 <h3 class="text-xl font-black text-red-600 border-b border-red-200 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF</h3>
-                <div><p class="text-xs text-slate-400 font-bold">PRESIDENTE</p><p class="font-bold text-black">Riccardo Cudia</p></div>
-                <div><p class="text-xs text-slate-400 font-bold">ALLENATORE</p><p class="font-bold text-black">Nome Mister</p></div>
+                <div>
+                    <p class="text-xs text-slate-400 font-bold">PRESIDENTE (PRS)</p>
+                    <p id="staff-presidente" class="font-bold text-black italic text-lg">Caricamento...</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-bold">VICEPRESIDENTE (VPS)</p>
+                    <p id="staff-vicepresidente" class="font-bold text-black text-base">Caricamento...</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-bold">ALLENATORE (DIT)</p>
+                    <p id="staff-allenatore" class="font-bold text-black text-base">Caricamento...</p>
+                </div>
             </div>
             
             <div class="md:col-span-2 border border-slate-200 p-6 rounded-xl">
                 <h3 class="text-xl font-black text-black border-b border-slate-200 pb-2 mb-4"><i class="fas fa-shirt text-pink-500 mr-2"></i>LA ROSA</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#1</span> Portiere</div>
-                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#7</span> Attaccante</div>
-                    <div class="p-2 bg-slate-50 rounded border border-slate-100 flex items-center"><span class="text-pink-500 font-mono font-bold mr-2">#10</span> Centrocampista</div>
+                <div id="container-rosa" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <p class="text-sm text-slate-400 col-span-full">Lettura elenco tesserati in corso...</p>
                 </div>
             </div>
         </div>
@@ -69,8 +77,84 @@
     </main>
 
     <footer class="text-center py-8 border-t border-slate-100 text-xs text-slate-400 mt-20">
-        &copy; 2026 Banda Bassotti F.C. • Promotori ufficiali dello sport bolognese.
+        &copy; 2026 Banda Bassotti F.C. • Sincronizzato con l'elenco ufficiale tesserati CSI Bologna.
     </footer>
+
+    <script>
+        function caricaTesseratiUfficiali() {
+            // Utilizziamo il cache-buster (?_t=) per forzare l'aggiornamento quando carichi un nuovo file
+            fetch('Elenco_Tesserati.csv?_t=' + Date.now())
+                .then(response => {
+                    if (!response.ok) throw new Error("File Elenco_Tesserati.csv non trovato nella cartella.");
+                    return response.text();
+                })
+                .then(data => {
+                    // Divide il file in righe
+                    const righe = data.split(/\r?\n/);
+                    if (righe.length < 2) return;
+
+                    let staff = { presidente: 'Non definito', vicepresidente: 'Non definito', allenatore: 'Non definito' };
+                    let elencoGiocatori = [];
+
+                    // Partiamo da i = 1 per saltare la riga dei titoli (Tessera, Cognome, Nome...)
+                    for (let i = 1; i < righe.length; i++) {
+                        // Il file esportato dal CSI usa le tabulazioni (\t) come separatore
+                        const colonne = righe[i].split('\t');
+                        if (colonne.length < 5) continue;
+
+                        const cognome = colonne[1]?.trim();
+                        const nome = colonne[2]?.trim();
+                        const qualifica = colonne[4]?.trim().toUpperCase();
+
+                        if (!nome || !cognome) continue;
+                        
+                        // Formattiamo il nome portando la prima lettera maiuscola e il resto minuscolo per estetica
+                        const formattaNome = (str) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                        const nomeCompleto = `${formattaNome(nome)} ${formattaNome(cognome)}`;
+
+                        // 1. Smistamento Staff in base alle sigle CSI
+                        if (qualifica === 'PRS') staff.presidente = nomeCompleto;
+                        if (qualifica === 'VPS') staff.vicepresidente = nomeCompleto;
+                        if (qualifica === 'DIT') staff.allenatore = nomeCompleto;
+
+                        // 2. Regola della Rosa: Tutti tranne il Tecnico Allenatore (DIT) giocano
+                        if (qualifica !== 'DIT') {
+                            elencoGiocatori.push(nomeCompleto);
+                        }
+                    }
+
+                    // Ordiniamo i giocatori alfabeticamente per cognome/nome
+                    elencoGiocatori.sort();
+
+                    // Aggiorniamo lo Staff nella pagina
+                    document.getElementById('staff-presidente').textContent = staff.presidente;
+                    document.getElementById('staff-vicepresidente').textContent = staff.vicepresidente;
+                    document.getElementById('staff-allenatore').textContent = staff.allenatore;
+
+                    // Aggiorniamo la Rosa dei giocatori nella pagina
+                    const container = document.getElementById('container-rosa');
+                    container.innerHTML = ''; // Svuota il testo di caricamento
+
+                    elencoGiocatori.forEach((giocatore, index) => {
+                        const div = document.createElement('div');
+                        div.className = "p-2.5 bg-slate-50 rounded-lg border border-slate-100 flex items-center hover:border-red-600 hover:bg-white transition-all shadow-sm font-medium";
+                        // Mostra un numero progressivo (#1, #2...) accanto al nome
+                        div.innerHTML = `<span class="text-red-600 font-mono font-bold mr-2 text-sm">#${index + 1}</span> <span class="text-slate-900">${giocatore}</span>`;
+                        container.appendChild(div);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('container-rosa').innerHTML = `
+                        <p class="text-sm text-red-500 col-span-full border border-dashed border-red-300 p-4 rounded-lg bg-red-50">
+                            <i class="fas fa-triangle-exclamation mr-2"></i>Impossibile caricare la rosa. Verifica che il file <strong>Elenco_Tesserati.csv</strong> sia caricato correttamente su GitHub.
+                        </p>`;
+                });
+        }
+
+        // Avvia la lettura automatica appena la pagina si apre
+        window.onload = caricaTesseratiUfficiali;
+    </script>
 
 </body>
 </html>
