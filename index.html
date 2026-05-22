@@ -88,7 +88,7 @@
                 const data = await response.json();
                 
                 // Estrae l'array delle partite (mappato come "dati" su Power Automate)
-                const partite = data.dati || [];
+                const partite = data.dati || data;
                 const container = document.getElementById('partite-container');
                 container.innerHTML = '';
 
