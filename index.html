@@ -3,17 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banda Bassotti F.C. - Sito Ufficiale</title>
+    <title>Banda Bassotti - Sito Ufficiale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Stili speciali per l'overlay del testo sulla maglia */
+        .jersey-container {
+            position: relative;
+            display: inline-block;
+        }
+        /* Nome del giocatore sopra il numero */
+        .jersey-name {
+            position: absolute;
+            top: 28%; /* Posizione precisa basata sull'immagine fornita */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff; /* Testo bianco */
+            font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 8px; /* Piccolo ma leggibile */
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5); /* Ombra per contrasto */
+        }
+        /* Numero di maglia grande al centro */
+        .jersey-number {
+            position: absolute;
+            top: 38%; /* Posizione precisa basata sull'immagine fornita */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #facc15; /* Giallo brillante come nella maglia */
+            font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+            font-weight: 900;
+            font-size: 26px;
+            line-height: 1;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.8); /* Ombra forte per profondità */
+        }
+    </style>
 </head>
 <body class="bg-white text-black font-sans antialiased">
 
     <nav class="bg-white border-b-4 border-red-600 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
             <div class="flex items-center space-x-3">
-                <span class="text-2xl">🦝</span>
-                <span class="font-black text-xl tracking-wider text-black">BANDA BASSOTTI <span class="text-red-600">F.C.</span></span>
+                <img src="document_1771753073356.png" alt="Logo Banda Bassotti" class="h-12 w-auto">
+                <span class="font-black text-xl tracking-wider text-black">BANDA BASSOTTI</span>
             </div>
             <div>
                 <a href="badi-cup.html" class="bg-red-600 text-white hover:bg-black px-4 py-2 rounded-full font-bold text-sm transition-all shadow-md">
@@ -23,114 +58,133 @@
         </div>
     </nav>
 
+    <header class="relative bg-black h-80 flex items-center justify-center overflow-hidden border-b-8 border-red-600">
+        <div class="absolute inset-0 z-0 opacity-60">
+            <img src="1779531598227(1)(1).jpg" alt="Sfondo Squadra Banda Bassotti" class="w-full h-full object-cover object-center">
+        </div>
+        
+        <div class="relative z-10 max-w-5xl w-full mx-auto px-4 flex items-center">
+            <div class="flex flex-col sm:flex-row items-center gap-6 bg-black/40 p-6 rounded-2xl backdrop-blur-sm border border-white/20">
+                <img src="document_1771753073356.png" alt="Logo Banda Bassotti" class="h-32 w-auto">
+                <div class="text-center sm:text-left">
+                    <h1 class="text-5xl font-black text-white tracking-tight mb-1">BANDA BASSOTTI</h1>
+                    <p class="text-red-400 font-bold uppercase tracking-widest text-base">Squadra Ufficiale Calcio a 7 • Bologna</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
         
-        <div class="text-center py-6 border-b-2 border-slate-100">
-            <h1 class="text-5xl font-black text-black tracking-tight mb-2">BANDA BASSOTTI F.C.</h1>
-            <p class="text-red-600 font-bold uppercase tracking-widest text-sm">Squadra Ufficiale Calcio a 7 • Bologna</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-3xl mx-auto">
-                <div class="border-2 border-black p-8 rounded-xl flex flex-col justify-center items-center bg-slate-50">
-                    <i class="fas fa-shield-halved text-5xl text-blue-600 mb-2"></i>
-                    <span class="text-xs text-slate-400">[Stemma Squadra]</span>
-                </div>
-                <div class="border-2 border-black p-8 rounded-xl flex flex-col justify-center items-center bg-slate-50">
-                    <i class="fas fa-users text-5xl text-pink-500 mb-2"></i>
-                    <span class="text-xs text-slate-400">[Foto di Gruppo]</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-2xl border-2 border-black shadow-sm">
-            
-            <div class="md:col-span-1 space-y-3 md:border-r border-slate-200 md:pr-6 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xl font-black text-black tracking-tight uppercase mb-1"><i class="fas fa-address-card text-red-600 mr-2"></i>Chi Siamo</h2>
-                    <p class="text-sm font-bold text-slate-700">Società sportive affiliate al CSI</p>
-                </div>
-                <div class="pt-4">
-                    <a href="https://tesseramento.csi-net.it/S_Accesso.asp" target="_blank" class="inline-flex items-center text-xs bg-black text-white font-bold px-4 py-2.5 rounded-lg hover:bg-red-600 transition shadow w-full justify-center sm:w-auto">
-                        <i class="fas fa-lock mr-2 text-yellow-400"></i>Accesso Area Riservata
-                    </a>
-                </div>
-            </div>
-            
-            <div class="md:col-span-2 space-y-4 md:pl-2">
-                <h2 class="text-xl font-black text-black tracking-tight uppercase"><i class="fas fa-trophy text-blue-600 mr-2"></i>Iscrizioni Campionati & Eventi</h2>
-                
-                <div class="space-y-3">
-                    <div class="border border-slate-200 rounded-xl bg-white p-3 hover:shadow-md transition">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-2xl">📅</span>
-                                <div>
-                                    <h4 class="font-black text-sm text-black">Stagione 2024/25</h4>
-                                    <p class="text-xs text-slate-500 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
-                                </div>
-                            </div>
-                            <button onclick="togglePannelloStats()" class="bg-slate-100 hover:bg-slate-200 text-black border border-slate-300 font-bold text-xs px-4 py-2 rounded-lg flex items-center transition whitespace-nowrap">
-                                <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i> Dati e Statistiche <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
-                            </button>
-                        </div>
-                        
-                        <div id="pannello-stats-2425" class="hidden pt-4 border-t border-slate-100 mt-3">
-                            <div id="tabella-stats-container" class="overflow-x-auto">
-                                <p class="text-xs text-slate-400 italic">Lettura file statistiche in corso...</p>
-                            </div>
-                        </div>
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition border-l-8 border-red-600">
+            <div class="flex items-start gap-4">
+                <i class="fas fa-address-card text-3xl text-red-600 mt-1"></i>
+                <div class="flex-1 space-y-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-black tracking-tight uppercase mb-1">Chi Siamo</h2>
+                        <p class="text-sm font-bold text-slate-700">Società sportive affiliate al CSI</p>
                     </div>
-
-                    <div class="border border-slate-200 rounded-xl bg-white p-3 opacity-70">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <span class="text-2xl">⏳</span>
-                                <div>
-                                    <h4 class="font-black text-sm text-slate-700">Stagione 2025/26</h4>
-                                    <p class="text-xs text-slate-400 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
-                                </div>
-                            </div>
-                            <span class="bg-slate-100 border text-slate-400 text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full whitespace-nowrap">
-                                Senza Dati
-                            </span>
-                        </div>
+                    <div class="pt-2">
+                        <a href="https://tesseramento.csi-net.it/S_Accesso.asp" target="_blank" class="inline-flex items-center text-sm bg-black text-white font-bold px-5 py-3 rounded-xl hover:bg-red-600 transition shadow">
+                            <i class="fas fa-lock mr-2 text-yellow-400"></i>Accesso Area Riservata
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="md:col-span-1 border border-slate-200 p-6 rounded-xl space-y-4 h-fit">
-                <h3 class="text-xl font-black text-red-600 border-b border-red-200 pb-2"><i class="fas fa-user-tie mr-2"></i>LO STAFF ATTUALE</h3>
-                <div>
-                    <p class="text-xs text-slate-400 font-bold">PRESIDENTE</p>
-                    <p id="staff-presidente" class="font-bold text-black text-lg">Caricamento...</p>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-bold">VICEPRESIDENTE</p>
-                    <p id="staff-vicepresidente" class="font-bold text-black text-base">Caricamento...</p>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-bold">ALLENATORE (MISTER)</p>
-                    <p id="staff-allenatore" class="font-bold text-black text-base">Caricamento...</p>
-                </div>
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition border-l-8 border-blue-600">
+            <div class="flex items-start gap-4 mb-6">
+                <i class="fas fa-trophy text-3xl text-blue-600 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">Iscrizioni Campionati & Eventi</h2>
             </div>
             
-            <div class="md:col-span-2 border border-slate-200 p-6 rounded-xl">
-                <h3 class="text-xl font-black text-black border-b border-slate-200 pb-2 mb-4"><i class="fas fa-shirt text-pink-500 mr-2"></i>LA ROSA ATTUALE</h3>
-                <div id="container-rosa" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <p class="text-sm text-slate-400 col-span-full">Lettura elenco tesserati in corso...</p>
+            <div class="space-y-4">
+                <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 hover:border-blue-300 transition">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">📅</span>
+                            <div>
+                                <h4 class="font-black text-base text-black">Stagione 2024/25</h4>
+                                <p class="text-xs text-slate-600 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                            </div>
+                        </div>
+                        <button onclick="togglePannelloStats()" class="bg-white hover:bg-slate-100 text-black border border-slate-300 font-bold text-xs px-4 py-2.5 rounded-lg flex items-center transition whitespace-nowrap shadow-sm">
+                            <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i> Dati e Statistiche <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="pannello-stats-2425" class="hidden pt-5 border-t border-slate-200 mt-4">
+                        <div id="tabella-stats-container" class="overflow-x-auto">
+                            <p class="text-xs text-slate-400 italic">Lettura file statistiche in corso...</p>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 opacity-70">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">⏳</span>
+                            <div>
+                                <h4 class="font-black text-base text-slate-700">Stagione 2025/26</h4>
+                                <p class="text-xs text-slate-500 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                            </div>
+                        </div>
+                        <span class="bg-white border text-slate-400 text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full whitespace-nowrap shadow-inner">
+                            Senza Dati
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition border-l-8 border-red-600 space-y-6">
+            <div class="flex items-start gap-4 border-b border-slate-100 pb-4 mb-2">
+                <i class="fas fa-user-tie text-3xl text-red-600 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">Lo Staff Attuale</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1.5 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Presidente</p>
+                    <p id="staff-presidente-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-presidente-tel" href="" class="block text-sm text-blue-700 hover:underline"></a>
+                    <a id="staff-presidente-mail" href="" class="block text-sm text-blue-700 lowercase hover:underline"></a>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1.5 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Vicepresidente</p>
+                    <p id="staff-vicepresidente-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-vicepresidente-tel" href="" class="block text-sm text-blue-700 hover:underline"></a>
+                    <a id="staff-vicepresidente-mail" href="" class="block text-sm text-blue-700 lowercase hover:underline"></a>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1.5 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Allenatore (Mister)</p>
+                    <p id="staff-allenatore-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-allenatore-tel" href="" class="block text-sm text-blue-700 hover:underline"></a>
+                    <a id="staff-allenatore-mail" href="" class="block text-sm text-blue-700 lowercase hover:underline"></a>
+                </div>
+            </div>
+        </div>
+            
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition border-l-8 border-pink-500 space-y-6">
+            <div class="flex items-start gap-4 border-b border-slate-100 pb-4 mb-2">
+                <i class="fas fa-shirt text-3xl text-pink-500 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">La Rosa Attuale</h2>
+            </div>
+            
+            <div id="container-rosa" class="space-y-3">
+                <p class="text-sm text-slate-400">Lettura elenco tesserati in corso...</p>
             </div>
         </div>
 
     </main>
 
     <footer class="text-center py-8 border-t border-slate-100 text-xs text-slate-400 mt-20">
-        &copy; 2026 Banda Bassotti F.C. • Portale Statistiche integrato.
+        &copy; 2026 Banda Bassotti • Bologna • Piattaforma Statistiche Live integrata.
     </footer>
 
     <script>
-        // 1. CARICAMENTO ELENCO TESSERATI ATTUALI (Dal nuovo file con separatore ";")
+        // 1. CARICAMENTO ELENCO TESSERATI ATTUALI (ESTRAZIONE ANCHE DATI CONTATTO E DATA NASCITA)
         function caricaTesseratiUfficiali() {
             fetch('Elenco_Tesserati.csv?_t=' + Date.now())
                 .then(response => {
@@ -141,73 +195,121 @@
                     const righe = data.split(/\r?\n/);
                     if (righe.length < 2) return;
 
-                    let staff = { presidente: 'Non definito', vicepresidente: 'Non definito', allenatore: 'Non definito' };
+                    // Strutture dati vuote
+                    let staff = { 
+                        presidente: {nome: 'Non definito', tel: '', mail: ''}, 
+                        vicepresidente: {nome: 'Non definito', tel: '', mail: ''}, 
+                        allenatore: {nome: 'Non definito', tel: '', mail: ''} 
+                    };
                     let elencoGiocatori = [];
 
                     // Ciclo saltando l'intestazione
                     for (let i = 1; i < righe.length; i++) {
                         const colonne = righe[i].split(';');
-                        if (colonne.length < 4) continue;
+                        if (colonne.length < 8) continue;
 
                         const cognome = colonne[0]?.trim();
                         const nome = colonne[1]?.trim();
                         const numeroMaglia = colonne[2]?.trim() || '';
                         const nomeMaglia = colonne[3]?.trim() || '';
-                        const dirigenza = colonne[5]?.trim() || ''; // Colonna Dirigenza
+                        const dataNascitaRaw = colonne[4]?.trim() || '';
+                        const dirigenza = colonne[5]?.trim() || '';
+                        const telefono = colonne[6]?.trim() || '';
+                        const email = colonne[7]?.trim() || '';
 
                         if (!nome || !cognome) continue;
                         
+                        // Formattazione estetica Nomi
                         const formattaNome = (str) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
                         const nomeCompleto = `${formattaNome(nome)} ${formattaNome(cognome)}`;
 
-                        // Smistamento dello Staff in base alla colonna Dirigenza
-                        const dirigenzaLower = dirigenza.toLowerCase();
-                        if (dirigenzaLower === 'presidente') staff.presidente = nomeCompleto;
-                        if (dirigenzaLower === 'vicepresidente') staff.vicepresidente = nomeCompleto;
-                        if (dirigenzaLower === 'tecnico' || dirigenzaLower === 'allenatore') staff.allenatore = nomeCompleto;
+                        // Formattazione data di nascita (da YYYY-MM-DD a DD/MM/YYYY)
+                        let dataNascitaFormattata = '';
+                        if (dataNascitaRaw && dataNascitaRaw !== '-' && dataNascitaRaw.includes('-')) {
+                            const partiData = dataNascitaRaw.split('-');
+                            if (partiData.length === 3) {
+                                dataNascitaFormattata = `${partiData[2]}/${partiData[1]}/${partiData[0]}`;
+                            }
+                        }
 
-                        // Regola: Tutti tranne il Tecnico sono giocatori
+                        // Smistamento dello Staff in base alla colonna Dirigenza ed estrazione contatti
+                        const dirigenzaLower = dirigenza.toLowerCase();
+                        if (dirigenzaLower === 'presidente') staff.presidente = {nome: nomeCompleto, tel: telefono, mail: email};
+                        if (dirigenzaLower === 'vicepresidente') staff.vicepresidente = {nome: nomeCompleto, tel: telefono, mail: email};
+                        if (dirigenzaLower === 'tecnico' || dirigenzaLower === 'allenatore') staff.allenatore = {nome: nomeCompleto, tel: telefono, mail: email};
+
+                        // Regola della Rosa: Tutti tranne l'Allenatore sono giocatori
                         if (dirigenzaLower !== 'tecnico' && dirigenzaLower !== 'allenatore') {
                             elencoGiocatori.push({
-                                nomeCompleto: nomeCompleto,
+                                cognome: formattaNome(cognome),
+                                nome: formattaNome(nome),
                                 numero: numeroMaglia,
-                                nickname: nomeMaglia
+                                nickname: (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia : nome,
+                                dataNascita: dataNascitaFormattata
                             });
                         }
                     }
 
-                    // Ordiniamo la rosa alfabeticamente per cognome/nome
-                    elencoGiocatori.sort((a, b) => a.nomeCompleto.localeCompare(b.nomeCompleto));
+                    // Ordiniamo la rosa alfabeticamente per COGNOME
+                    elencoGiocatori.sort((a, b) => a.cognome.localeCompare(b.cognome));
 
-                    // Inserimento dati dello Staff nella pagina
-                    document.getElementById('staff-presidente').textContent = staff.presidente;
-                    document.getElementById('staff-vicepresidente').textContent = staff.vicepresidente;
-                    document.getElementById('staff-allenatore').textContent = staff.allenatore;
+                    // Inserimento dati dello Staff (con collegamenti tel: e mail:)
+                    const setStaffBlock = (roleId, dataObj) => {
+                        document.getElementById(`staff-${roleId}-nome`).textContent = dataObj.nome;
+                        
+                        const elTel = document.getElementById(`staff-${roleId}-tel`);
+                        if(dataObj.tel && dataObj.tel !== '-') {
+                            elTel.textContent = dataObj.tel;
+                            elTel.href = `tel:${dataObj.tel.replace(/\s+/g, '')}`; // Rimuove spazi per il link
+                        } else elTel.textContent = '';
 
-                    // Costruzione grafica della Rosa
+                        const elMail = document.getElementById(`staff-${roleId}-mail`);
+                        if(dataObj.mail && dataObj.mail !== '-') {
+                            elMail.textContent = dataObj.mail.toLowerCase(); // Mail sempre in minuscolo
+                            elMail.href = `mailto:${dataObj.mail.toLowerCase()}`;
+                        } else elMail.textContent = '';
+                    };
+
+                    setStaffBlock('presidente', staff.presidente);
+                    setStaffBlock('vicepresidente', staff.vicepresidente);
+                    setStaffBlock('allenatore', staff.allenatore);
+
+                    // COSTRUZIONE GRAFICA DELLA ROSA (MODIFICATA: COLONNA UNICA, IMMAGINE MAGLIA CON OVERLAY)
                     const container = document.getElementById('container-rosa');
                     container.innerHTML = '';
 
                     elencoGiocatori.forEach(giocatore => {
-                        const div = document.createElement('div');
-                        div.className = "p-2.5 bg-slate-50 rounded-lg border border-slate-100 flex items-center hover:border-red-600 hover:bg-white transition-all shadow-sm font-medium";
+                        const row = document.createElement('div');
+                        // Riga intera con bordo e ombreggiatura leggera
+                        row.className = "p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-6 hover:border-pink-300 hover:bg-white transition-all shadow-sm";
                         
-                        // Gestione grafica del numero di maglia
-                        const numeroDisplay = giocatore.numero && giocatore.numero !== '-' ? `#${giocatore.numero}` : '#--';
+                        // Gestione grafica del numero di maglia (testo overlay)
+                        const numeroOverlay = giocatore.numero && giocatore.numero !== '-' ? giocatore.numero : '--';
                         
-                        // Se presente un nome maglia personalizzato lo mostriamo tra virgolette
-                        const nickDisplay = giocatore.nickname && giocatore.nickname !== '-' ? `<span class="text-xs text-slate-400 font-normal italic ml-1.5">"${giocatore.nickname}"</span>` : '';
+                        // Gestione grafica del soprannome (testo overlay sopra il numero)
+                        const nickOverlay = giocatore.nickname.toUpperCase();
 
-                        div.innerHTML = `
-                            <span class="text-red-600 font-mono font-black mr-3 text-sm bg-red-50 px-2 py-0.5 rounded border border-red-100 min-w-[2.5rem] text-center">${numeroDisplay}</span>
-                            <span class="text-slate-900">${giocatore.nomeCompleto} ${nickDisplay}</span>
+                        row.innerHTML = `
+                            <div class="jersey-container flex-shrink-0">
+                                <img src="IMG-20250116-WA0003.jpg" alt="Retro Maglia" class="h-20 w-auto rounded border border-slate-200">
+                                <span class="jersey-name">${nickOverlay}</span>
+                                <span class="jersey-number">${numeroOverlay}</span>
+                            </div>
+
+                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:items-center">
+                                <div class="font-bold text-lg text-black uppercase">${giocatore.cognome}</div>
+                                <div class="font-semibold text-lg text-slate-800 uppercase">${giocatore.nome}</div>
+                                <div class="text-sm font-mono text-slate-500 sm:text-right border-l-2 sm:border-l-0 pl-2 sm:pl-0 border-pink-200">
+                                    ${giocatore.dataNascita ? `<i class="fas fa-birthday-cake mr-1.5 text-pink-300"></i>${giocatore.dataNascita}` : ''}
+                                </div>
+                            </div>
                         `;
-                        container.appendChild(div);
+                        container.appendChild(row);
                     });
                 })
                 .catch(err => {
                     console.error(err);
-                    document.getElementById('container-rosa').innerHTML = `<p class="text-xs text-red-500 col-span-full">Errore nel caricamento della Rosa corrente.</p>`;
+                    document.getElementById('container-rosa').innerHTML = `<p class="text-xs text-red-500 col-span-full p-4 border border-dashed border-red-300 rounded-xl bg-red-50">Errore nel caricamento della Rosa corrente.</p>`;
                 });
         }
 
@@ -223,18 +325,18 @@
                     if(righe.length < 2) return;
 
                     let htmlTabella = `
-                        <div class="border border-black rounded-lg overflow-hidden bg-white">
+                        <div class="border border-black rounded-lg overflow-hidden bg-white shadow-inner">
                             <table class="w-full text-left text-xs border-collapse">
                                 <thead>
                                     <tr class="bg-slate-900 text-white uppercase font-black tracking-wider text-[10px]">
-                                        <th class="p-2 text-center border-r border-slate-800">N°</th>
-                                        <th class="p-2 border-r border-slate-800">Giocatore</th>
-                                        <th class="p-2 text-center border-r border-slate-800">Ruolo</th>
-                                        <th class="p-2 text-center bg-black border-r border-slate-800">Pres.</th>
-                                        <th class="p-2 text-center text-red-400 bg-red-950 border-r border-slate-800">Gol</th>
-                                        <th class="p-2 text-center text-blue-400 bg-blue-950 border-r border-slate-800">Ast</th>
-                                        <th class="p-2 text-center text-yellow-400"><i class="fas fa-square"></i></th>
-                                        <th class="p-2 text-center text-red-500"><i class="fas fa-square"></i></th>
+                                        <th class="p-2.5 text-center border-r border-slate-800">N°</th>
+                                        <th class="p-2.5 border-r border-slate-800">Giocatore</th>
+                                        <th class="p-2.5 text-center border-r border-slate-800">Ruolo</th>
+                                        <th class="p-2.5 text-center bg-black border-r border-slate-800">Pres.</th>
+                                        <th class="p-2.5 text-center text-red-400 bg-red-950 border-r border-slate-800">Gol</th>
+                                        <th class="p-2.5 text-center text-blue-400 bg-blue-950 border-r border-slate-800">Ast</th>
+                                        <th class="p-2.5 text-center text-yellow-400"><i class="fas fa-square"></i></th>
+                                        <th class="p-2.5 text-center text-red-500"><i class="fas fa-square"></i></th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-200 font-semibold text-slate-900">
@@ -257,18 +359,19 @@
 
                         if(!nome || !cognome) continue;
 
-                        const nomeVisualizzato = (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia : `${nome} ${cognome}`;
+                        // Se c'è il nome maglia usiamo quello (tutto maiuscolo), altrimenti Nome + Cognome
+                        const nomeVisualizzato = (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia.toUpperCase() : `${nome} ${cognome}`;
 
                         htmlTabella += `
-                            <tr class="hover:bg-slate-50">
-                                <td class="p-2 text-center font-mono font-bold text-slate-400 border-r bg-slate-50">${numero}</td>
-                                <td class="p-2 font-bold text-black border-r">${nomeVisualizzato}</td>
-                                <td class="p-2 text-center font-bold text-[10px] border-r"><span class="bg-slate-100 border px-1.5 py-0.5 rounded text-slate-600">${ruolo}</span></td>
-                                <td class="p-2 text-center bg-slate-50 font-black text-sm border-r">${presenze}</td>
-                                <td class="p-2 text-center text-red-600 font-black text-sm bg-red-50/50 border-r">${goals}</td>
-                                <td class="p-2 text-center text-blue-600 font-black text-sm bg-blue-50/50 border-r">${assist}</td>
-                                <td class="p-2 text-center font-mono text-yellow-600">${gialli}</td>
-                                <td class="p-2 text-center font-mono text-red-600">${rossi}</td>
+                            <tr class="hover:bg-slate-50 transition border-l-2 border-transparent hover:border-blue-500">
+                                <td class="p-2.5 text-center font-mono font-bold text-slate-500 border-r bg-slate-50">${numero}</td>
+                                <td class="p-2.5 font-bold text-black border-r">${nomeVisualizzato}</td>
+                                <td class="p-2.5 text-center font-bold text-[10px] border-r"><span class="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-600">${ruolo}</span></td>
+                                <td class="p-2.5 text-center bg-slate-50 font-black text-sm border-r">${presenze}</td>
+                                <td class="p-2.5 text-center text-red-600 font-black text-sm bg-red-50/50 border-r">${goals}</td>
+                                <td class="p-2.5 text-center text-blue-600 font-black text-sm bg-blue-50/50 border-r">${assist}</td>
+                                <td class="p-2.5 text-center font-mono text-yellow-600">${gialli}</td>
+                                <td class="p-2.5 text-center font-mono text-red-600">${rossi}</td>
                             </tr>
                         `;
                     }
@@ -283,12 +386,13 @@
                 })
                 .catch(err => {
                     document.getElementById('tabella-stats-container').innerHTML = `
-                        <p class="text-xs text-red-500 font-bold p-2 border border-red-200 bg-red-50 rounded">
+                        <p class="text-xs text-red-500 font-bold p-3 border border-red-200 bg-red-50 rounded">
                             Impossibile caricare le statistiche.
                         </p>`;
                 });
         }
 
+        // Interruttore di apertura/chiusura del pannello a scomparsa
         function togglePannelloStats() {
             const pannello = document.getElementById('pannello-stats-2425');
             const freccia = document.getElementById('freccia-stats');
@@ -296,6 +400,7 @@
             if(pannello.classList.contains('hidden')) {
                 pannello.classList.remove('hidden');
                 freccia.className = "fas fa-chevron-up ml-2 text-blue-600";
+                // Esegue il parsing del file solo se non è stato ancora caricato
                 if(document.getElementById('tabella-stats-container').innerHTML.includes('Lettura file')) {
                     generaStatistiche2425();
                 }
@@ -305,7 +410,7 @@
             }
         }
 
-        // Avvio automatico al caricamento del DOM
+        // Avvio automatico appena il DOM è pronto
         window.addEventListener('DOMContentLoaded', () => {
             caricaTesseratiUfficiali();
         });
