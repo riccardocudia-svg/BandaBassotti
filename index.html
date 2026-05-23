@@ -362,7 +362,7 @@
                     document.getElementById('tabella-stats-container').innerHTML = `<p class="text-red-500">Errore nel caricamento.</p>`;
                 });
         }
-
+	
 	function generaPartite() {
             fetch('Stagione1.csv?t=' + Date.now())
                 .then(res => res.arrayBuffer())
@@ -374,16 +374,10 @@
                         const col = righe[i].split(';');
                         if(col.length < 6) continue;
                         const [giornata, casa, golC, golT, trasf, dataM, campo] = col;
-                        
-                        // LOGICA TRASFORMAZIONE GIORNATA
-                        const parts = giornata.split('.');
-                        const labelGiornata = parts.length === 2 ? `${parts[0]}° FASE Partita ${parts[1]}` : giornata;
-                        
                         const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
                         html += `
                             <div class="border p-4 rounded-xl ${isBB ? 'bg-red-50 border-red-200' : 'bg-white'}">
-                                <div class="text-[10px] text-slate-400 font-black tracking-widest">${labelGiornata.toUpperCase()}</div>
-                                <div class="text-[9px] text-slate-400 font-bold mb-2">${dataM}</div>
+                                <div class="text-[10px] text-slate-400 font-bold">${giornata} • ${dataM}</div>
                                 <div class="font-bold text-sm">${casa} vs ${trasf}</div>
                                 <div class="text-xl font-black">${golC} - ${golT}</div>
                             </div>
@@ -402,7 +396,7 @@
                 freccia.className = "fas fa-chevron-up ml-2 text-blue-600";
                 if(document.getElementById('tabella-stats-container').innerHTML.includes('Lettura file')) {
                 	generaStatistiche2425();
-			generaPartite();
+			generaPartite()
                 }
             } else {
                 pannello.classList.add('hidden');
