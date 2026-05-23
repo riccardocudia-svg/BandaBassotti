@@ -11,7 +11,7 @@
         .jersey-container {
             position: relative;
             display: inline-block;
-            width: 80px; /* Larghezza fissa per la maglia */
+            width: 100px; /* Larghezza fissa per la maglia */
         }
         .jersey-container img {
             width: 100%;
@@ -23,26 +23,26 @@
             top: 25%;
             left: 50%;
             transform: translateX(-50%);
-            color: #ffffff;
+            color: #000000;
             font-family: 'Arial Black', sans-serif;
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 8px;
+            font-size: 7px;
             letter-spacing: 0.5px;
             white-space: nowrap;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            text-shadow: none;
         }
         .jersey-number {
             position: absolute;
             top: 40%;
             left: 50%;
             transform: translateX(-50%);
-            color: #facc15; /* Giallo */
+            color: #000000;
             font-family: 'Arial Black', sans-serif;
             font-weight: 900;
             font-size: 24px;
             line-height: 1;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.9);
+            text-shadow: none;
         }
     </style>
 </head>
@@ -118,11 +118,16 @@
                         </button>
                     </div>
                     
-                    <div id="pannello-stats-2425" class="hidden pt-5 border-t border-slate-200 mt-4">
-                        <div id="tabella-stats-container" class="overflow-x-auto">
-                            <p class="text-xs text-slate-400 italic">Lettura file statistiche in corso...</p>
-                        </div>
-                    </div>
+            <div id="pannello-stats" class="hidden space-y-8">
+                <div>
+                    <h3 class="font-black text-blue-600 mb-4 text-lg border-b pb-2">Risultati Partite</h3>
+                    <div id="tabella-partite-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                </div>
+                <div>
+                    <h3 class="font-black text-red-600 mb-4 text-lg border-b pb-2">Statistiche Giocatori</h3>
+                    <div id="tabella-stats-container" class="overflow-x-auto"></div>
+                </div>
+            </div>
                 </div>
 
                 <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 opacity-70">
@@ -298,68 +303,34 @@
                 });
         }
 
-        function generaStatistiche2425() {
-            fetch('Statistiche1.csv?_t=' + Date.now())
-                .then(res => res.text())
-                .then(data => {
+function generaStatistiche() {
+            fetch('Statistiche1.csv?t=' + Date.now())
+                .then(res => res.arrayBuffer())
+                .then(buffer => {
+                    const data = estraiTestoCSV(buffer);
                     const righe = data.split(/\r?\n/);
-                    if(righe.length < 2) return;
-
-                    let htmlTabella = `
-                        <div class="border border-black rounded-lg overflow-hidden bg-white shadow-inner">
-                            <table class="w-full text-left text-xs border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-900 text-white uppercase font-black tracking-wider text-[10px]">
-                                        <th class="p-2.5 text-center border-r border-slate-800">N°</th>
-                                        <th class="p-2.5 border-r border-slate-800">Giocatore</th>
-                                        <th class="p-2.5 text-center border-r border-slate-800">Ruolo</th>
-                                        <th class="p-2.5 text-center bg-black border-r border-slate-800">Pres.</th>
-                                        <th class="p-2.5 text-center text-red-400 bg-red-950 border-r border-slate-800">Gol</th>
-                                        <th class="p-2.5 text-center text-blue-400 bg-blue-950 border-r border-slate-800">Ast</th>
-                                        <th class="p-2.5 text-center text-yellow-400"><i class="fas fa-square"></i></th>
-                                        <th class="p-2.5 text-center text-red-500"><i class="fas fa-square"></i></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200 font-semibold text-slate-900">
-                    `;
-
+                    let html = `<table class="w-full text-left text-sm border-collapse">
+                        <thead><tr class="bg-slate-900 text-white"><th class="p-2">Giocatore</th><th class="p-2 text-center">Pres</th><th class="p-2 text-center">Gol</th></tr></thead>
+                        <tbody>`;
+                    
                     for(let i = 1; i < righe.length; i++) {
-                        const colonne = righe[i].split(';');
-                        if(colonne.length < 12) continue;
-
-                        const cognome = colonne[0]?.trim();
-                        const nome = colonne[1]?.trim();
-                        const numero = colonne[2]?.trim() || '-';
-                        const nomeMaglia = colonne[3]?.trim();
-                        const ruolo = colonne[4]?.trim() || '-';
-                        const presenze = colonne[7]?.trim() || '0';
-                        const goals = colonne[8]?.trim() || '0';
-                        const assist = colonne[9]?.trim() || '0';
-                        const gialli = colonne[10]?.trim() || '0';
-                        const rossi = colonne[11]?.trim() || '0';
-
-                        if(!nome || !cognome) continue;
-                        const nomeVisualizzato = (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia.toUpperCase() : `${nome} ${cognome}`;
-
-                        htmlTabella += `
-                            <tr class="hover:bg-slate-50 border-l-2 border-transparent hover:border-blue-500">
-                                <td class="p-2.5 text-center font-mono font-bold text-slate-500 border-r bg-slate-50">${numero}</td>
-                                <td class="p-2.5 font-bold text-black border-r">${nomeVisualizzato}</td>
-                                <td class="p-2.5 text-center font-bold text-[10px] border-r"><span class="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-600">${ruolo}</span></td>
-                                <td class="p-2.5 text-center bg-slate-50 font-black text-sm border-r">${presenze}</td>
-                                <td class="p-2.5 text-center text-red-600 font-black text-sm bg-red-50/50 border-r">${goals}</td>
-                                <td class="p-2.5 text-center text-blue-600 font-black text-sm bg-blue-50/50 border-r">${assist}</td>
-                                <td class="p-2.5 text-center font-mono text-yellow-600">${gialli}</td>
-                                <td class="p-2.5 text-center font-mono text-red-600">${rossi}</td>
-                            </tr>
-                        `;
+                        const col = righe[i].split(';');
+                        if(col.length < 9) continue;
+                        const [cog, nom, num, nick, , , , pres, gol] = col;
+                        html += `<tr>
+                            <td class="p-2 border flex items-center gap-3">
+                                <div class="jersey-container jersey-container-sm">
+                                    <img src="RetroMaglia.png">
+                                    <span class="jersey-name">${nick || nom}</span>
+                                    <span class="jersey-number">${num}</span>
+                                </div>
+                                <span class="font-bold">${nom} ${cog}</span>
+                            </td>
+                            <td class="p-2 border text-center">${pres}</td>
+                            <td class="p-2 border text-red-600 font-bold text-center">${gol}</td>
+                        </tr>`;
                     }
-
-                    htmlTabella += `</tbody></table></div>`;
-                    document.getElementById('tabella-stats-container').innerHTML = htmlTabella;
-                })
-                .catch(() => {
-                    document.getElementById('tabella-stats-container').innerHTML = `<p class="text-red-500">Errore nel caricamento.</p>`;
+                    document.getElementById('tabella-stats-container').innerHTML = html + '</tbody></table>';
                 });
         }
 	
@@ -388,19 +359,11 @@
         }
 
         function togglePannelloStats() {
-            const pannello = document.getElementById('pannello-stats-2425');
-            const freccia = document.getElementById('freccia-stats');
-            
-            if(pannello.classList.contains('hidden')) {
-                pannello.classList.remove('hidden');
-                freccia.className = "fas fa-chevron-up ml-2 text-blue-600";
-                if(document.getElementById('tabella-stats-container').innerHTML.includes('Lettura file')) {
-                	generaStatistiche2425();
-					generaPartite();
-                }
-            } else {
-                pannello.classList.add('hidden');
-                freccia.className = "fas fa-chevron-down ml-2";
+            const p = document.getElementById('pannello-stats');
+            p.classList.toggle('hidden');
+            if(!p.classList.contains('hidden') && document.getElementById('tabella-stats-container').innerHTML === '') {
+                generaStatistiche();
+                generaPartite();
             }
         }
 
