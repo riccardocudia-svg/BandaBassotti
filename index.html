@@ -7,18 +7,43 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .jersey-container { position: relative; display: inline-block; }
-        .jersey-container img { width: 100%; height: auto; display: block; }
-        
-        /* Maglia GRANDE (Rosa) */
-        .jersey-container-lg { width: 80px; }
-        .jersey-container-lg .jersey-name { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); color: #ffffff; font-family: sans-serif; font-weight: 900; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; white-space: nowrap; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        .jersey-container-lg .jersey-number { position: absolute; top: 40%; left: 50%; transform: translateX(-50%); color: #facc15; font-family: sans-serif; font-weight: 900; font-size: 24px; line-height: 1; text-shadow: 2px 2px 3px rgba(0,0,0,0.9); }
-
-        /* Maglia PICCOLA (Statistiche) */
-        .jersey-container-sm { width: 45px; }
-        .jersey-container-sm .jersey-name { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); color: #ffffff; font-family: sans-serif; font-weight: 900; text-transform: uppercase; font-size: 4px; letter-spacing: 0.3px; white-space: nowrap; text-shadow: 1px 1px 1px rgba(0,0,0,0.8); }
-        .jersey-container-sm .jersey-number { position: absolute; top: 40%; left: 50%; transform: translateX(-50%); color: #facc15; font-family: sans-serif; font-weight: 900; font-size: 14px; line-height: 1; text-shadow: 1px 1px 2px rgba(0,0,0,0.9); }
+        /* Overlay per il testo sulla maglia */
+        .jersey-container {
+            position: relative;
+            display: inline-block;
+            width: 80px; /* Larghezza fissa per la maglia */
+        }
+        .jersey-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .jersey-name {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 8px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        .jersey-number {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #facc15; /* Giallo */
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            line-height: 1;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.9);
+        }
     </style>
 </head>
 <body class="bg-white text-black font-sans antialiased">
@@ -26,112 +51,319 @@
     <nav class="bg-white border-b-4 border-red-600 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
             <div class="flex items-center space-x-3">
+                <img src="Stemma.png" alt="Logo Banda Bassotti" class="h-12 w-auto">
                 <span class="font-black text-xl tracking-wider text-black">BANDA BASSOTTI</span>
+            </div>
+            <div>
+                <a href="badi-cup.html" class="bg-red-600 text-white hover:bg-black px-4 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                    <i class="fas fa-trophy mr-2 text-pink-400"></i>Badi Summer Cup
+                </a>
             </div>
         </div>
     </nav>
 
+    <header class="relative bg-black h-80 flex items-center justify-center overflow-hidden border-b-8 border-red-600">
+        <div class="absolute inset-0 z-0 opacity-60">
+            <img src="FotoSquadra.jpg" alt="Sfondo Squadra" class="w-full h-full object-cover object-center">
+        </div>
+        
+        <div class="relative z-10 max-w-5xl w-full mx-auto px-4 flex items-center">
+            <div class="flex flex-col sm:flex-row items-center gap-6 bg-black/50 p-6 rounded-2xl backdrop-blur-sm border border-white/10">
+                <img src="Stemma.png" alt="Logo Banda Bassotti" class="h-28 w-auto">
+                <div class="text-center sm:text-left">
+                    <h1 class="text-5xl font-black text-white tracking-tight mb-1">BANDA BASSOTTI</h1>
+                    <p class="text-red-400 font-bold uppercase tracking-widest text-base">Squadra Ufficiale Calcio a 7 • Bologna</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
         
-        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-blue-600">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-black text-black tracking-tight uppercase">Stagione 1</h2>
-                <button onclick="togglePannelloStats()" class="bg-black text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-red-600 transition">
-                    Visualizza Dati <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
-                </button>
-            </div>
-            
-            <div id="pannello-stats" class="hidden space-y-8">
-                <div>
-                    <h3 class="font-black text-blue-600 mb-4 text-lg border-b pb-2">Risultati Partite</h3>
-                    <div id="tabella-partite-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
-                </div>
-                <div>
-                    <h3 class="font-black text-red-600 mb-4 text-lg border-b pb-2">Statistiche Giocatori</h3>
-                    <div id="tabella-stats-container" class="overflow-x-auto"></div>
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-red-600">
+            <div class="flex items-start gap-4">
+                <i class="fas fa-address-card text-3xl text-red-600 mt-1"></i>
+                <div class="flex-1 space-y-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-black tracking-tight uppercase mb-1">Chi Siamo</h2>
+                        <p class="text-sm font-bold text-slate-700">Società sportiva affiliata al CSI</p>
+                    </div>
+                    <div class="pt-2">
+                        <a href="https://tesseramento.csi-net.it/S_Accesso.asp" target="_blank" class="inline-flex items-center text-sm bg-black text-white font-bold px-5 py-3 rounded-xl hover:bg-red-600 transition shadow">
+                            <i class="fas fa-lock mr-2 text-yellow-400"></i>Accesso Area Riservata
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-pink-500">
-            <h2 class="text-2xl font-black text-black tracking-tight uppercase mb-6">La Rosa</h2>
-            <div id="container-rosa" class="space-y-3"></div>
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-blue-600">
+            <div class="flex items-start gap-4 mb-6">
+                <i class="fas fa-trophy text-3xl text-blue-600 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">Iscrizioni Campionati & Eventi</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 hover:border-blue-300 transition">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">📅</span>
+                            <div>
+                                <h4 class="font-black text-base text-black">Stagione 2024/25</h4>
+                                <p class="text-xs text-slate-600 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                            </div>
+                        </div>
+                        <button onclick="togglePannelloStats()" class="bg-white hover:bg-slate-100 text-black border border-slate-300 font-bold text-xs px-4 py-2.5 rounded-lg flex items-center transition shadow-sm">
+                            <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i> Dati e Statistiche <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="pannello-stats-2425" class="hidden pt-5 border-t border-slate-200 mt-4">
+                        <div id="tabella-stats-container" class="overflow-x-auto">
+                            <p class="text-xs text-slate-400 italic">Lettura file statistiche in corso...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 opacity-70">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">⏳</span>
+                            <div>
+                                <h4 class="font-black text-base text-slate-700">Stagione 2025/26</h4>
+                                <p class="text-xs text-slate-500 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                            </div>
+                        </div>
+                        <span class="bg-white border text-slate-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-inner">
+                            Senza Dati
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-red-600 space-y-6">
+            <div class="flex items-start gap-4 border-b border-slate-100 pb-4 mb-2">
+                <i class="fas fa-user-tie text-3xl text-red-600 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">Lo Staff Attuale</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Presidente</p>
+                    <p id="staff-presidente-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-presidente-tel" href="" class="block text-sm text-blue-600 hover:underline mt-1"></a>
+                    <a id="staff-presidente-mail" href="" class="block text-sm text-blue-600 lowercase hover:underline"></a>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Vicepresidente</p>
+                    <p id="staff-vicepresidente-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-vicepresidente-tel" href="" class="block text-sm text-blue-600 hover:underline mt-1"></a>
+                    <a id="staff-vicepresidente-mail" href="" class="block text-sm text-blue-600 lowercase hover:underline"></a>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-inner">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Allenatore (Mister)</p>
+                    <p id="staff-allenatore-nome" class="font-black text-black text-lg">Caricamento...</p>
+                    <a id="staff-allenatore-tel" href="" class="block text-sm text-blue-600 hover:underline mt-1"></a>
+                    <a id="staff-allenatore-mail" href="" class="block text-sm text-blue-600 lowercase hover:underline"></a>
+                </div>
+            </div>
+        </div>
+            
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-pink-500 space-y-6">
+            <div class="flex items-start gap-4 border-b border-slate-100 pb-4 mb-2">
+                <i class="fas fa-shirt text-3xl text-pink-500 mt-1"></i>
+                <h2 class="text-2xl font-black text-black tracking-tight uppercase">La Rosa Attuale</h2>
+            </div>
+            
+            <div id="container-rosa" class="space-y-3">
+                <p class="text-sm text-slate-400">Lettura elenco tesserati in corso...</p>
+            </div>
         </div>
 
     </main>
 
-    <script>
-        // Funzione Decoder per accenti italiani
-        function estraiTestoCSV(buffer) {
-            const decoder = new TextDecoder('windows-1252');
-            return decoder.decode(buffer);
-        }
+    <footer class="text-center py-8 border-t border-slate-100 text-xs text-slate-400 mt-20">
+        &copy; 2026 Banda Bassotti • Bologna • Piattaforma Statistiche Live integrata.
+    </footer>
 
-        // 1. CARICAMENTO ROSA
-        function caricaTesserati() {
-            fetch('Elenco_Tesserati.csv?t=' + Date.now())
-                .then(res => res.arrayBuffer())
-                .then(buffer => {
-                    const data = estraiTestoCSV(buffer);
+    <script>
+        function caricaTesseratiUfficiali() {
+            // Aggiungiamo un parametro per evitare la cache del browser
+            fetch('Elenco_Tesserati.csv?_t=' + Date.now())
+                .then(response => {
+                    if (!response.ok) throw new Error("File Elenco_Tesserati.csv non trovato.");
+                    return response.text();
+                })
+                .then(data => {
                     const righe = data.split(/\r?\n/);
+                    if (righe.length < 2) return;
+
+                    let staff = { 
+                        presidente: {nome: 'Non definito', tel: '', mail: ''}, 
+                        vicepresidente: {nome: 'Non definito', tel: '', mail: ''}, 
+                        allenatore: {nome: 'Non definito', tel: '', mail: ''} 
+                    };
+                    let elencoGiocatori = [];
+
+                    // Lettura basata sulle nuove colonne del file
+                    for (let i = 1; i < righe.length; i++) {
+                        const colonne = righe[i].split(';');
+                        if (colonne.length < 8) continue;
+
+                        const cognome = colonne[0]?.trim();
+                        const nome = colonne[1]?.trim();
+                        const qualifiche = colonne[2]?.trim() || '';
+                        const telefono = colonne[3]?.trim() || '';
+                        const dataNascita = colonne[4]?.trim() || '';
+                        const email = colonne[5]?.trim() || '';
+                        const numeroMaglia = colonne[6]?.trim() || '';
+                        const nomeMaglia = colonne[7]?.trim() || '';
+
+                        if (!nome || !cognome) continue;
+                        
+                        const formattaNome = (str) => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                        const nomeCompleto = `${formattaNome(nome)} ${formattaNome(cognome)}`;
+
+                        // Smistamento Staff tramite la colonna "Qualifiche" (PRS, VPS, DIT)
+                        if (qualifiche === 'PRS') staff.presidente = {nome: nomeCompleto, tel: telefono, mail: email};
+                        if (qualifiche === 'VPS') staff.vicepresidente = {nome: nomeCompleto, tel: telefono, mail: email};
+                        if (qualifiche === 'DIT') staff.allenatore = {nome: nomeCompleto, tel: telefono, mail: email};
+
+                        // Se non è il mister (DIT), va nella rosa dei giocatori
+                        if (qualifiche !== 'DIT') {
+                            elencoGiocatori.push({
+                                cognome: formattaNome(cognome),
+                                nome: formattaNome(nome),
+                                numero: numeroMaglia,
+                                nickname: (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia : nome,
+                                dataNascita: dataNascita
+                            });
+                        }
+                    }
+
+                    elencoGiocatori.sort((a, b) => a.cognome.localeCompare(b.cognome));
+
+                    const setStaffBlock = (roleId, dataObj) => {
+                        document.getElementById(`staff-${roleId}-nome`).textContent = dataObj.nome;
+                        
+                        const elTel = document.getElementById(`staff-${roleId}-tel`);
+                        if(dataObj.tel) {
+                            elTel.textContent = dataObj.tel;
+                            elTel.href = `tel:${dataObj.tel.replace(/\s+/g, '')}`;
+                        } else elTel.textContent = '';
+
+                        const elMail = document.getElementById(`staff-${roleId}-mail`);
+                        if(dataObj.mail) {
+                            elMail.textContent = dataObj.mail.toLowerCase();
+                            elMail.href = `mailto:${dataObj.mail.toLowerCase()}`;
+                        } else elMail.textContent = '';
+                    };
+
+                    setStaffBlock('presidente', staff.presidente);
+                    setStaffBlock('vicepresidente', staff.vicepresidente);
+                    setStaffBlock('allenatore', staff.allenatore);
+
                     const container = document.getElementById('container-rosa');
                     container.innerHTML = '';
-                    
-                    for (let i = 1; i < righe.length; i++) {
-                        const col = righe[i].split(';');
-                        if (col.length < 8) continue;
-                        const [cognome, nome, qual, tel, dataN, mail, num, nick] = col;
-                        
+
+                    elencoGiocatori.forEach(giocatore => {
                         const row = document.createElement('div');
-                        row.className = "p-4 bg-slate-50 rounded-xl border flex items-center gap-6";
+                        row.className = "p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-6 hover:border-pink-300 hover:bg-white transition-all shadow-sm";
+                        
+                        const numeroOverlay = giocatore.numero && giocatore.numero !== '-' ? giocatore.numero : '--';
+                        const nickOverlay = giocatore.nickname.toUpperCase();
+
                         row.innerHTML = `
-                            <div class="jersey-container jersey-container-lg">
+                            <div class="jersey-container flex-shrink-0">
                                 <img src="RetroMaglia.png" alt="Maglia">
-                                <span class="jersey-name">${nick ? nick.toUpperCase() : nome.toUpperCase()}</span>
-                                <span class="jersey-number">${num || '--'}</span>
+                                <span class="jersey-name">${nickOverlay}</span>
+                                <span class="jersey-number">${numeroOverlay}</span>
                             </div>
-                            <div class="font-black uppercase">${cognome} ${nome}</div>
+
+                            <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                                <div class="font-black text-xl text-black uppercase">${giocatore.cognome}</div>
+                                <div class="font-bold text-lg text-slate-600 uppercase">${giocatore.nome}</div>
+                                <div class="text-sm font-mono text-slate-500 sm:ml-auto">
+                                    ${giocatore.dataNascita ? `<i class="fas fa-birthday-cake mr-2 text-pink-400"></i>${giocatore.dataNascita}` : ''}
+                                </div>
+                            </div>
                         `;
                         container.appendChild(row);
-                    }
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('container-rosa').innerHTML = `<p class="text-red-500">Errore: File non trovato o formato non valido.</p>`;
                 });
         }
 
-        // 2. CARICAMENTO STATISTICHE
-        function generaStatistiche() {
-            fetch('Statistiche1.csv?t=' + Date.now())
-                .then(res => res.arrayBuffer())
-                .then(buffer => {
-                    const data = estraiTestoCSV(buffer);
+        function generaStatistiche2425() {
+            fetch('BB1°.csv?_t=' + Date.now())
+                .then(res => res.text())
+                .then(data => {
                     const righe = data.split(/\r?\n/);
-                    let html = `<table class="w-full text-left text-xs border-collapse">
-                        <thead><tr class="bg-slate-900 text-white"><th class="p-2">Giocatore</th><th class="p-2">Pres</th><th class="p-2">Gol</th></tr></thead>
-                        <tbody>`;
-                    
+                    if(righe.length < 2) return;
+
+                    let htmlTabella = `
+                        <div class="border border-black rounded-lg overflow-hidden bg-white shadow-inner">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900 text-white uppercase font-black tracking-wider text-[10px]">
+                                        <th class="p-2.5 text-center border-r border-slate-800">N°</th>
+                                        <th class="p-2.5 border-r border-slate-800">Giocatore</th>
+                                        <th class="p-2.5 text-center border-r border-slate-800">Ruolo</th>
+                                        <th class="p-2.5 text-center bg-black border-r border-slate-800">Pres.</th>
+                                        <th class="p-2.5 text-center text-red-400 bg-red-950 border-r border-slate-800">Gol</th>
+                                        <th class="p-2.5 text-center text-blue-400 bg-blue-950 border-r border-slate-800">Ast</th>
+                                        <th class="p-2.5 text-center text-yellow-400"><i class="fas fa-square"></i></th>
+                                        <th class="p-2.5 text-center text-red-500"><i class="fas fa-square"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 font-semibold text-slate-900">
+                    `;
+
                     for(let i = 1; i < righe.length; i++) {
-                        const col = righe[i].split(';');
-                        if(col.length < 9) continue;
-                        // Indici: 0:Cognome, 1:Nome, 2:N°Maglia, 3:NomeMaglia, 7:Presenze, 8:Goals
-                        const [cog, nom, num, nick, , , , pres, gol] = col;
-                        html += `<tr>
-                            <td class="p-2 border flex items-center gap-2">
-                                <div class="jersey-container jersey-container-sm">
-                                    <img src="RetroMaglia.png">
-                                    <span class="jersey-name">${nick || nom}</span>
-                                    <span class="jersey-number">${num}</span>
-                                </div>
-                                ${nom} ${cog}
-                            </td>
-                            <td class="p-2 border">${pres}</td>
-                            <td class="p-2 border text-red-600 font-bold">${gol}</td>
-                        </tr>`;
+                        const colonne = righe[i].split(';');
+                        if(colonne.length < 12) continue;
+
+                        const cognome = colonne[0]?.trim();
+                        const nome = colonne[1]?.trim();
+                        const numero = colonne[2]?.trim() || '-';
+                        const nomeMaglia = colonne[3]?.trim();
+                        const ruolo = colonne[4]?.trim() || '-';
+                        const presenze = colonne[7]?.trim() || '0';
+                        const goals = colonne[8]?.trim() || '0';
+                        const assist = colonne[9]?.trim() || '0';
+                        const gialli = colonne[10]?.trim() || '0';
+                        const rossi = colonne[11]?.trim() || '0';
+
+                        if(!nome || !cognome) continue;
+                        const nomeVisualizzato = (nomeMaglia && nomeMaglia !== '-') ? nomeMaglia.toUpperCase() : `${nome} ${cognome}`;
+
+                        htmlTabella += `
+                            <tr class="hover:bg-slate-50 border-l-2 border-transparent hover:border-blue-500">
+                                <td class="p-2.5 text-center font-mono font-bold text-slate-500 border-r bg-slate-50">${numero}</td>
+                                <td class="p-2.5 font-bold text-black border-r">${nomeVisualizzato}</td>
+                                <td class="p-2.5 text-center font-bold text-[10px] border-r"><span class="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-600">${ruolo}</span></td>
+                                <td class="p-2.5 text-center bg-slate-50 font-black text-sm border-r">${presenze}</td>
+                                <td class="p-2.5 text-center text-red-600 font-black text-sm bg-red-50/50 border-r">${goals}</td>
+                                <td class="p-2.5 text-center text-blue-600 font-black text-sm bg-blue-50/50 border-r">${assist}</td>
+                                <td class="p-2.5 text-center font-mono text-yellow-600">${gialli}</td>
+                                <td class="p-2.5 text-center font-mono text-red-600">${rossi}</td>
+                            </tr>
+                        `;
                     }
-                    document.getElementById('tabella-stats-container').innerHTML = html + '</tbody></table>';
+
+                    htmlTabella += `</tbody></table></div>`;
+                    document.getElementById('tabella-stats-container').innerHTML = htmlTabella;
+                })
+                .catch(() => {
+                    document.getElementById('tabella-stats-container').innerHTML = `<p class="text-red-500">Errore nel caricamento.</p>`;
                 });
         }
 
-        // 3. CARICAMENTO PARTITE
-        function generaPartite() {
+	function generaPartite() {
             fetch('Stagione1.csv?t=' + Date.now())
                 .then(res => res.arrayBuffer())
                 .then(buffer => {
@@ -142,10 +374,16 @@
                         const col = righe[i].split(';');
                         if(col.length < 6) continue;
                         const [giornata, casa, golC, golT, trasf, dataM, campo] = col;
+                        
+                        // LOGICA TRASFORMAZIONE GIORNATA
+                        const parts = giornata.split('.');
+                        const labelGiornata = parts.length === 2 ? `${parts[0]}° FASE Partita ${parts[1]}` : giornata;
+                        
                         const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
                         html += `
                             <div class="border p-4 rounded-xl ${isBB ? 'bg-red-50 border-red-200' : 'bg-white'}">
-                                <div class="text-[10px] text-slate-400 font-bold">${giornata} • ${dataM}</div>
+                                <div class="text-[10px] text-slate-400 font-black tracking-widest">${labelGiornata.toUpperCase()}</div>
+                                <div class="text-[9px] text-slate-400 font-bold mb-2">${dataM}</div>
                                 <div class="font-bold text-sm">${casa} vs ${trasf}</div>
                                 <div class="text-xl font-black">${golC} - ${golT}</div>
                             </div>
@@ -156,15 +394,23 @@
         }
 
         function togglePannelloStats() {
-            const p = document.getElementById('pannello-stats');
-            p.classList.toggle('hidden');
-            if(!p.classList.contains('hidden') && document.getElementById('tabella-stats-container').innerHTML === '') {
-                generaStatistiche();
-                generaPartite();
+            const pannello = document.getElementById('pannello-stats-2425');
+            const freccia = document.getElementById('freccia-stats');
+            
+            if(pannello.classList.contains('hidden')) {
+                pannello.classList.remove('hidden');
+                freccia.className = "fas fa-chevron-up ml-2 text-blue-600";
+                if(document.getElementById('tabella-stats-container').innerHTML.includes('Lettura file')) {
+                	generaStatistiche2425();
+			generaPartite();
+                }
+            } else {
+                pannello.classList.add('hidden');
+                freccia.className = "fas fa-chevron-down ml-2";
             }
         }
 
-        window.onload = caricaTesserati;
+        window.addEventListener('DOMContentLoaded', caricaTesseratiUfficiali);
     </script>
 </body>
 </html>
