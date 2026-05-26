@@ -178,12 +178,11 @@
                 <div id="pannello-stats" class="hidden space-y-8 mt-6">
 
                     <div>
-                        <h3 class="font-black text-blue-600 mb-4 text-lg border-b pb-2">Risultati Partite</h3>
-                        <p class="text-xs text-slate-400 mb-3 italic">
+                        <h3 class="font-black text-blue-600 mb-1 text-lg border-b pb-2">Risultati Partite</h3>
+                        <p class="text-xs text-slate-400 mb-4 italic">
                             <i class="fas fa-circle-info mr-1"></i>Passa il puntatore su una partita per vedere i dettagli dei giocatori.
                         </p>
-                        <div id="tabella-partite-container"
-                             class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                        <div id="tabella-partite-container"></div>
                     </div>
 
                     <div>
@@ -441,86 +440,169 @@
 
     /* ───── Partite ───── */
     function generaPartite() {
-        fetch('Stagione1.csv?t=' + Date.now())
-            .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
-            .then(buf => {
-                const data = estraiTestoCSV(buf);
-                const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
+        // Carica in parallelo Stagione1.csv + le due classifiche
+        Promise.all([
+            fetch('Stagione1.csv?t='   + Date.now()).then(r=>{ if(!r.ok) throw new Error(); return r.arrayBuffer(); }),
+            fetch('S1_Fase1.csv?t='    + Date.now()).then(r=>r.ok ? r.arrayBuffer() : null).catch(()=>null),
+            fetch('S1_Fase2.csv?t='    + Date.now()).then(r=>r.ok ? r.arrayBuffer() : null).catch(()=>null),
+        ])
+        .then(([bufStag, bufF1, bufF2]) => {
 
-                // Riga 0 = intestazioni; dalla col 7 in poi = nomi giocatori
-                const header = righe[0].split(';');
-                const nomiGiocatori = header.slice(7); // array di nomi
+            const data  = estraiTestoCSV(bufStag);
+            const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
+            const header = righe[0].split(';');
+            const nomiGiocatori = header.slice(7);
 
-                let html = '';
+            /* ── Parsing classifiche ── */
+            function parseClassifica(buf) {
+                if (!buf) return [];
+                const testo = estraiTestoCSV(buf);
+                return testo.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0)
+                    .slice(1) // salta intestazione
+                    .map(r => { const c=r.split(';'); return { squadra:c[0]||'', pt:c[1]||'0', dr:c[2]||'0' }; })
+                    .sort((a,b) => parseInt(b.pt,10)-parseInt(a.pt,10) || parseInt(b.dr,10)-parseInt(a.dr,10));
+            }
 
-                for (let i=1; i<righe.length; i++) {
-                    const col = righe[i].split(';');
-                    if (col.length < 6) continue;
+            const classF1 = parseClassifica(bufF1);
+            const classF2 = parseClassifica(bufF2);
 
-                    const giornata = col[0]||'', casa=col[1]||'', golC=col[2]||'';
-                    const golT=col[3]||'', trasf=col[4]||'', dataM=col[5]||'';
+            /* ── Raggruppamento partite per fase ── */
+            const fase1=[], fase2=[], playoff=[];
+            const PLAYOFF_KEYS = ['ottavi','quarti','semifinale','finale','finalissima'];
 
-                    // Salta righe senza squadre (playoff vuoti)
-                    if (!casa && !trasf) continue;
+            for (let i=1; i<righe.length; i++) {
+                const col = righe[i].split(';');
+                const giornata = (col[0]||'').trim().toLowerCase();
+                const casa  = col[1]||'', golC=col[2]||'', golT=col[3]||'', trasf=col[4]||'', dataM=col[5]||'';
 
-                    const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
+                // righe vuote
+                if (!casa && !trasf) continue;
 
-                    /* Colore risultato */
-                    let borderClass='border-slate-200', bgClass='bg-white', badge='';
-                    if (isBB && golC!=='' && golT!=='') {
-                        const gC=parseInt(golC,10), gT=parseInt(golT,10);
-                        if (!isNaN(gC)&&!isNaN(gT)) {
-                            const bbCasa = casa.includes('Banda Bassotti');
-                            const golBB  = bbCasa?gC:gT, golAvv=bbCasa?gT:gC;
-                            if (golBB>golAvv)       { borderClass='border-green-400';  bgClass='bg-green-50';  badge=`<span class="text-[10px] font-black text-green-700 bg-green-100 border border-green-300 rounded-full px-1.5 py-0.5">V</span>`; }
-                            else if (golBB<golAvv)  { borderClass='border-red-400';    bgClass='bg-red-50';    badge=`<span class="text-[10px] font-black text-red-700 bg-red-100 border border-red-300 rounded-full px-1.5 py-0.5">S</span>`; }
-                            else                    { borderClass='border-slate-300';  bgClass='bg-slate-100'; badge=`<span class="text-[10px] font-black text-slate-500 bg-slate-200 border border-slate-300 rounded-full px-1.5 py-0.5">P</span>`; }
-                        }
-                    } else if (!isBB) { bgClass='bg-slate-50'; }
+                const obj = { giornata:col[0]||'', casa, golC, golT, trasf, dataM, col };
 
-                    /* Tooltip giocatori: colonne dalla 7 in poi */
-                    let tooltipRighe = [];
-                    for (let j=0; j<nomiGiocatori.length; j++) {
-                        const nomeG = nomiGiocatori[j]?.trim();
-                        if (!nomeG) continue;
-                        const valCella = col[7+j]?.trim() || '';
-                        const contrib  = decodificaContributo(valCella);
-                        const riga = rigaTooltip(nomeG, contrib);
-                        if (riga) tooltipRighe.push(riga);
-                    }
-
-                    const tooltipHtml = tooltipRighe.length > 0
-                        ? `<div class="partita-tooltip">
-                               ${tooltipRighe.join('<br>')}
-                               <div class="tooltip-legenda">⚽gol &nbsp;🦶assist &nbsp;🟨giallo &nbsp;🟥rosso</div>
-                           </div>`
-                        : '';
-
-                    html += `
-                        <div class="partita-card border ${borderClass} ${bgClass} p-3 rounded-xl" data-idx="${i}">
-                            ${tooltipHtml}
-                            <div class="flex items-center justify-between mb-1">
-                                <div class="text-[10px] text-slate-400 font-bold leading-tight">
-                                    ${escapeHTML(giornata)}<br>${escapeHTML(dataM)}
-                                </div>
-                                ${badge}
-                            </div>
-                            <div class="font-bold text-xs leading-snug">
-                                ${escapeHTML(casa)} <span class="text-slate-400">vs</span> ${escapeHTML(trasf)}
-                            </div>
-                            <div class="text-xl font-black mt-1">${escapeHTML(golC)} - ${escapeHTML(golT)}</div>
-                        </div>`;
+                if (PLAYOFF_KEYS.some(k=>giornata.startsWith(k))) {
+                    playoff.push(obj);
+                } else if (giornata.startsWith('1.')) {
+                    fase1.push(obj);
+                } else if (giornata.startsWith('2.')) {
+                    fase2.push(obj);
                 }
+            }
 
-                const cont = document.getElementById('tabella-partite-container');
-                cont.innerHTML = html;
+            /* ── Costruisce HTML card partita ── */
+            function cardPartita(obj, idx) {
+                const { casa, golC, golT, trasf, dataM, col } = obj;
+                const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
 
-                // Attach tooltip behavior a ogni card
-                cont.querySelectorAll('.partita-card').forEach(attachTooltipBehavior);
-            })
-            .catch(() => {
-                document.getElementById('tabella-partite-container').innerHTML = '<p class="text-red-500">Errore caricamento partite.</p>';
-            });
+                let borderClass='border-slate-200', bgClass='bg-white', badge='';
+                if (isBB && golC!=='' && golT!=='') {
+                    const gC=parseInt(golC,10), gT=parseInt(golT,10);
+                    if (!isNaN(gC)&&!isNaN(gT)) {
+                        const bbCasa = casa.includes('Banda Bassotti');
+                        const golBB=bbCasa?gC:gT, golAvv=bbCasa?gT:gC;
+                        if (golBB>golAvv)      { borderClass='border-green-400';  bgClass='bg-green-50';  badge=`<span class="text-[10px] font-black text-green-700 bg-green-100 border border-green-300 rounded-full px-1.5 py-0.5">V</span>`; }
+                        else if (golBB<golAvv) { borderClass='border-red-400';    bgClass='bg-red-50';    badge=`<span class="text-[10px] font-black text-red-700 bg-red-100 border border-red-300 rounded-full px-1.5 py-0.5">S</span>`; }
+                        else                   { borderClass='border-slate-300';  bgClass='bg-slate-100'; badge=`<span class="text-[10px] font-black text-slate-500 bg-slate-200 border border-slate-300 rounded-full px-1.5 py-0.5">P</span>`; }
+                    }
+                } else if (!isBB) { bgClass='bg-slate-50'; }
+
+                // tooltip
+                let tooltipRighe=[];
+                for (let j=0; j<nomiGiocatori.length; j++) {
+                    const nomeG = nomiGiocatori[j]?.trim();
+                    if (!nomeG) continue;
+                    const contrib = decodificaContributo(col[7+j]?.trim()||'');
+                    const riga = rigaTooltip(nomeG, contrib);
+                    if (riga) tooltipRighe.push(riga);
+                }
+                const tooltipHtml = tooltipRighe.length>0
+                    ? `<div class="partita-tooltip">${tooltipRighe.join('<br>')}
+                           <div class="tooltip-legenda">⚽gol &nbsp;🦶assist &nbsp;🟨giallo &nbsp;🟥rosso</div>
+                       </div>` : '';
+
+                return `
+                    <div class="partita-card border ${borderClass} ${bgClass} p-3 rounded-xl" data-idx="${idx}">
+                        ${tooltipHtml}
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="text-[10px] text-slate-400 font-bold">${escapeHTML(dataM)}</div>
+                            ${badge}
+                        </div>
+                        <div class="font-bold text-xs leading-snug">
+                            ${escapeHTML(casa)} <span class="text-slate-400">vs</span> ${escapeHTML(trasf)}
+                        </div>
+                        <div class="text-xl font-black mt-1">${escapeHTML(golC)} - ${escapeHTML(golT)}</div>
+                    </div>`;
+            }
+
+            /* ── Costruisce HTML classifica ── */
+            function htmlClassifica(classifica) {
+                if (!classifica.length) return '';
+                let t = `
+                    <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-sm w-full">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800 text-white">
+                                    <th class="px-3 py-2 text-left font-black">#</th>
+                                    <th class="px-3 py-2 text-left font-black">Squadra</th>
+                                    <th class="px-3 py-2 text-center font-black">Pt</th>
+                                    <th class="px-3 py-2 text-center font-black">DR</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                classifica.forEach((sq, idx) => {
+                    const isBB = sq.squadra.includes('Banda Bassotti');
+                    const rowBg = isBB ? 'bg-red-50 font-black' : (idx%2===0?'bg-white':'bg-slate-50');
+                    t += `<tr class="${rowBg}">
+                        <td class="px-3 py-1.5 text-slate-400 font-bold">${idx+1}</td>
+                        <td class="px-3 py-1.5 ${isBB?'text-red-700':'text-slate-800'} font-bold whitespace-nowrap">${escapeHTML(sq.squadra)}</td>
+                        <td class="px-3 py-1.5 text-center font-black">${escapeHTML(sq.pt)}</td>
+                        <td class="px-3 py-1.5 text-center text-slate-500">${escapeHTML(sq.dr)}</td>
+                    </tr>`;
+                });
+                t += '</tbody></table></div>';
+                return t;
+            }
+
+            /* ── Costruisce sezione fase ── */
+            function sezioneHtml(titolo, partite, classifica, colore) {
+                const cardsHtml = partite.map((p,i)=>cardPartita(p,i)).join('');
+                const hasClassifica = classifica && classifica.length>0;
+                return `
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-black uppercase tracking-widest text-${colore}-600 bg-${colore}-50 border border-${colore}-200 px-3 py-1 rounded-full">${escapeHTML(titolo)}</span>
+                        </div>
+                        <div class="${hasClassifica ? 'flex flex-col lg:flex-row gap-4' : ''}">
+                            <div class="${hasClassifica ? 'flex-1 min-w-0' : ''}">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                    ${cardsHtml}
+                                </div>
+                            </div>
+                            ${hasClassifica ? `<div class="lg:w-64 xl:w-72 flex-shrink-0">${htmlClassifica(classifica)}</div>` : ''}
+                        </div>
+                    </div>`;
+            }
+
+            /* ── Assembla tutto ── */
+            let html = '';
+
+            if (fase1.length)   html += sezioneHtml('Fase 1', fase1, classF1, 'blue');
+            if (fase2.length) {
+                if (fase1.length) html += '<hr class="border-slate-200 my-4">';
+                html += sezioneHtml('Fase 2', fase2, classF2, 'violet');
+            }
+            if (playoff.length) {
+                if (fase1.length||fase2.length) html += '<hr class="border-slate-200 my-4">';
+                html += sezioneHtml('Playoff', playoff, null, 'amber');
+            }
+
+            const cont = document.getElementById('tabella-partite-container');
+            cont.innerHTML = html;
+            cont.querySelectorAll('.partita-card').forEach(attachTooltipBehavior);
+        })
+        .catch(() => {
+            document.getElementById('tabella-partite-container').innerHTML = '<p class="text-red-500">Errore caricamento partite.</p>';
+        });
     }
 
     function togglePannelloStats() {
