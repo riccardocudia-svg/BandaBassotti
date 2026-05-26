@@ -250,21 +250,55 @@
     // ─── URL download diretto OneDrive ───
     // Per aggiornare: sostituisci solo questa riga con il nuovo link
     const ONEDRIVE_URL = 'https://1drv.ms/x/c/2de7b15a42d77acc/IQCZtrM_7LxNQ6KmcXJxbxNvARLz7m86MIB3cD8arpbLFGA?download=1&e=0HHwfQ';
-    const EXCEL_URL = 'https://corsproxy.io/?' + encodeURIComponent(ONEDRIVE_URL);
 
     let statsCaricate = false;
-    let wbCache = null; // Workbook in cache: scaricato una volta sola per pagina
+    let wbCache = null;
 
     // ─────────────────────────────────────
-    // Scarica e parsa il file Excel (una volta sola, poi usa cache)
+    // Scarica e parsa il file Excel
+    // Prova 3 proxy in sequenza — se uno fallisce usa il prossimo
     // ─────────────────────────────────────
     async function getWorkbook() {
         if (wbCache) return wbCache;
-        const resp = await fetch(EXCEL_URL);
-        if (!resp.ok) throw new Error('Impossibile scaricare il file Excel da OneDrive');
-        const buf = await resp.arrayBuffer();
-        wbCache = XLSX.read(buf, { type: 'array', cellDates: true });
-        return wbCache;
+
+        const proxies = [
+            // Proxy 1: allorigins — restituisce base64 in JSON
+            async () => {
+                const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ONEDRIVE_URL);
+                const r = await fetch(url);
+                if (!r.ok) throw new Error('allorigins fallito');
+                const buf = await r.arrayBuffer();
+                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
+            },
+            // Proxy 2: corsproxy.io
+            async () => {
+                const url = 'https://corsproxy.io/?' + encodeURIComponent(ONEDRIVE_URL);
+                const r = await fetch(url);
+                if (!r.ok) throw new Error('corsproxy fallito');
+                const buf = await r.arrayBuffer();
+                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
+            },
+            // Proxy 3: thingproxy
+            async () => {
+                const url = 'https://thingproxy.freeboard.io/fetch/' + ONEDRIVE_URL;
+                const r = await fetch(url);
+                if (!r.ok) throw new Error('thingproxy fallito');
+                const buf = await r.arrayBuffer();
+                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
+            },
+        ];
+
+        let lastErr;
+        for (const tryProxy of proxies) {
+            try {
+                wbCache = await tryProxy();
+                return wbCache;
+            } catch(e) {
+                lastErr = e;
+                console.warn('Proxy fallito, provo il prossimo...', e.message);
+            }
+        }
+        throw new Error('Tutti i proxy hanno fallito. Controlla la connessione o il link OneDrive. Dettaglio: ' + lastErr.message);
     }
 
     // ─────────────────────────────────────
