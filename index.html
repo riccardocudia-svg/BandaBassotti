@@ -249,7 +249,8 @@
 
     // ─── URL download diretto OneDrive ───
     // Per aggiornare: sostituisci solo questa riga con il nuovo link
-    const EXCEL_URL = 'https://1drv.ms/x/c/2de7b15a42d77acc/IQCZtrM_7LxNQ6KmcXJxbxNvARLz7m86MIB3cD8arpbLFGA?download=1&e=0HHwfQ';
+    const ONEDRIVE_URL = 'https://1drv.ms/x/c/2de7b15a42d77acc/IQCZtrM_7LxNQ6KmcXJxbxNvARLz7m86MIB3cD8arpbLFGA?download=1&e=0HHwfQ';
+    const EXCEL_URL = 'https://corsproxy.io/?' + encodeURIComponent(ONEDRIVE_URL);
 
     let statsCaricate = false;
     let wbCache = null; // Workbook in cache: scaricato una volta sola per pagina
