@@ -24,6 +24,10 @@
         .jersey-container-sm .jersey-name { font-size:6px; }
         .jersey-container-sm .jersey-number { font-size:20px; }
 
+        .jersey-container-xs { width:52px; }
+        .jersey-container-xs .jersey-name { font-size:5px; }
+        .jersey-container-xs .jersey-number { font-size:13px; top:38%; }
+
         #pannello-stats { transition:all 0.3s ease; }
 
         .stats-table { border-collapse:separate; border-spacing:0; border-radius:12px; overflow:hidden; width:100%; box-shadow:0 1px 4px rgba(0,0,0,.08); }
@@ -178,7 +182,6 @@
                 <div id="pannello-stats" class="hidden space-y-8 mt-6">
 
                     <div>
-                        <h3 class="font-black text-blue-600 mb-1 text-lg border-b pb-2">Risultati Partite</h3>
                         <p class="text-xs text-slate-400 mb-4 italic">
                             <i class="fas fa-circle-info mr-1"></i>Passa il puntatore su una partita per vedere i dettagli dei giocatori.
                         </p>
@@ -186,7 +189,6 @@
                     </div>
 
                     <div>
-                        <h3 class="font-black text-red-600 mb-4 text-lg border-b pb-2">Statistiche Giocatori</h3>
                         <div id="tabella-stats-container" class="overflow-x-auto"></div>
                     </div>
 
@@ -389,49 +391,120 @@
     }
 
     /* ───── Statistiche giocatori ───── */
+    // Nuova struttura CSV (senza colonna Foto):
+    // 0:Cognome 1:Nome 2:N°Maglia 3:NomeMaglia 4:RUOLO 5:Dirigenza 6:Presenze 7:Goals 8:Assist 9:Gialli 10:Rossi
+
+    let statsData = [];       // dati grezzi per il re-sort
+    let statsSortCol  = -1;   // colonna corrente di ordinamento
+    let statsSortAsc  = true;
+
+    function renderStatsTable() {
+        const cols = [
+            { key:'pres',   label:'Pres',  title:'Presenze',          cls:'text-center font-mono' },
+            { key:'gol',    label:'⚽',    title:'Gol',               cls:'text-center text-red-600 font-black' },
+            { key:'assist', label:'🦶',    title:'Assist',            cls:'text-center text-blue-600 font-bold' },
+            { key:'gialli', label:'🟨',    title:'Cartellini gialli', cls:'text-center text-yellow-500 font-bold' },
+            { key:'rossi',  label:'🟥',    title:'Cartellini rossi',  cls:'text-center text-red-700 font-bold' },
+        ];
+
+        function thBtn(idx, col) {
+            const active = statsSortCol === idx;
+            const arrow  = active ? (statsSortAsc ? ' ▲' : ' ▼') : '';
+            return `<th class="p-1.5 text-center cursor-pointer select-none hover:bg-slate-700 transition"
+                        title="${escapeHTML(col.title)}"
+                        onclick="sortStats(${idx})">${escapeHTML(col.label)}${arrow}</th>`;
+        }
+
+        let html = `
+            <table class="stats-table text-left text-xs w-full">
+                <thead><tr class="bg-slate-900 text-white">
+                    <th class="p-1.5 pl-2 cursor-pointer select-none hover:bg-slate-700 transition"
+                        onclick="sortStats(-1)">Statistiche Giocatori${statsSortCol===-1?(statsSortAsc?' ▲':' ▼'):''}</th>
+                    <th class="p-1.5 text-center">Ruolo</th>
+                    ${cols.map((c,i)=>thBtn(i,c)).join('')}
+                </tr></thead><tbody>`;
+
+        statsData.forEach((p, i) => {
+            const bg = i%2===0 ? 'bg-white' : 'bg-slate-50';
+            html += `<tr class="${bg} hover:bg-blue-50 transition">
+                <td class="p-1.5 pl-2 border border-slate-200">
+                    <div class="flex items-center gap-2">
+                        <div class="jersey-container jersey-container-xs flex-shrink-0">
+                            <img src="RetroMaglia.png" alt="Maglia" loading="lazy">
+                            <span class="jersey-name">${escapeHTML(p.nick)}</span>
+                            <span class="jersey-number">${escapeHTML(p.num)}</span>
+                        </div>
+                        <span class="font-bold">${escapeHTML(p.nom)} ${escapeHTML(p.cog)}</span>
+                    </div>
+                </td>
+                <td class="p-1.5 border border-slate-200 text-center text-slate-500 font-bold">${escapeHTML(p.ruolo)}</td>
+                ${cols.map(c=>`<td class="p-1.5 border border-slate-200 ${c.cls}">${escapeHTML(String(p[c.key]))}</td>`).join('')}
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('tabella-stats-container').innerHTML = html;
+    }
+
+    window.sortStats = function(colIdx) {
+        const keys = ['pres','gol','assist','gialli','rossi'];
+        if (statsSortCol === colIdx) {
+            statsSortAsc = !statsSortAsc;
+        } else {
+            statsSortCol = colIdx;
+            statsSortAsc = false; // default: discendente per numeri, ascendente per nome
+            if (colIdx === -1) statsSortAsc = true;
+        }
+
+        statsData.sort((a, b) => {
+            let va, vb;
+            if (colIdx === -1) {
+                va = a.cog; vb = b.cog;
+                return statsSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            } else {
+                va = parseInt(a[keys[colIdx]], 10) || 0;
+                vb = parseInt(b[keys[colIdx]], 10) || 0;
+                return statsSortAsc ? va-vb : vb-va;
+            }
+        });
+
+        renderStatsTable();
+    };
+
     function generaStatistiche() {
         fetch('Statistiche1.csv?t=' + Date.now())
             .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
             .then(buf => {
                 const data = estraiTestoCSV(buf);
                 const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
-                let html = `
-                    <table class="stats-table text-left text-sm">
-                        <thead><tr class="bg-slate-900 text-white">
-                            <th class="p-2 pl-3">Giocatore</th>
-                            <th class="p-2 text-center" title="Presenze">Pres</th>
-                            <th class="p-2 text-center">⚽</th>
-                            <th class="p-2 text-center">🦶</th>
-                            <th class="p-2 text-center">🟨</th>
-                            <th class="p-2 text-center">🟥</th>
-                        </tr></thead><tbody>`;
+
+                statsData = [];
                 for (let i=1; i<righe.length; i++) {
                     const c = righe[i].split(';');
-                    if (c.length < 9) continue;
-                    const cog=c[0]||'', nom=c[1]||'', num=c[2]||'', nick=c[3]||nom;
-                    const pres=c[7]||'0', gol=c[8]||'0', assist=c[9]||'0', gialli=c[10]||'0', rossi=c[11]||'0';
-                    const bg = i%2===0?'bg-slate-50':'bg-white';
-                    html += `
-                        <tr class="${bg}">
-                            <td class="p-2 pl-3 border border-slate-200">
-                                <div class="flex items-center gap-3">
-                                    <div class="jersey-container jersey-container-sm flex-shrink-0">
-                                        <img src="RetroMaglia.png" alt="Maglia" loading="lazy">
-                                        <span class="jersey-name">${escapeHTML(nick||nom)}</span>
-                                        <span class="jersey-number">${escapeHTML(num)}</span>
-                                    </div>
-                                    <span class="font-bold">${escapeHTML(nom)} ${escapeHTML(cog)}</span>
-                                </div>
-                            </td>
-                            <td class="p-2 border border-slate-200 text-center font-mono">${escapeHTML(pres)}</td>
-                            <td class="p-2 border border-slate-200 text-red-600 font-black text-center">${escapeHTML(gol)}</td>
-                            <td class="p-2 border border-slate-200 text-blue-600 font-bold text-center">${escapeHTML(assist)}</td>
-                            <td class="p-2 border border-slate-200 text-yellow-500 font-bold text-center">${escapeHTML(gialli)}</td>
-                            <td class="p-2 border border-slate-200 text-red-700 font-bold text-center">${escapeHTML(rossi)}</td>
-                        </tr>`;
+                    if (c.length < 7) continue;
+                    const pres = c[6]?.trim();
+                    // salta righe senza presenze (allenatori/dirigenti puri)
+                    if (!pres || isNaN(parseInt(pres,10))) continue;
+                    statsData.push({
+                        cog:    c[0]?.trim()||'',
+                        nom:    c[1]?.trim()||'',
+                        num:    c[2]?.trim()||'',
+                        nick:   c[3]?.trim()||c[1]?.trim()||'',
+                        ruolo:  c[4]?.trim()||'',
+                        pres:   parseInt(pres,10)||0,
+                        gol:    parseInt(c[7],10)||0,
+                        assist: parseInt(c[8],10)||0,
+                        gialli: parseInt(c[9],10)||0,
+                        rossi:  parseInt(c[10],10)||0,
+                    });
                 }
-                html += '</tbody></table>';
-                document.getElementById('tabella-stats-container').innerHTML = html;
+
+                // Ordinamento iniziale: presenze decrescenti
+                statsSortCol  = 0;
+                statsSortAsc  = false;
+                statsData.sort((a,b)=>b.pres-a.pres);
+
+                renderStatsTable();
             })
             .catch(() => {
                 document.getElementById('tabella-stats-container').innerHTML = '<p class="text-red-500">Errore caricamento statistiche.</p>';
