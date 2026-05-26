@@ -244,54 +244,91 @@
     &copy; 2026 Banda Bassotti • Bologna • Piattaforma Statistiche Live integrata.
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    let statsCaricate = false;
 
-    function estraiTestoCSV(buffer) {
-        try { return new TextDecoder("windows-1252").decode(buffer); }
-        catch(e) { return new TextDecoder("utf-8").decode(buffer); }
+    // ─── URL download diretto OneDrive ───
+    // Per aggiornare: sostituisci solo questa riga con il nuovo link
+    const EXCEL_URL = 'https://1drv.ms/x/c/2de7b15a42d77acc/IQCZtrM_7LxNQ6KmcXJxbxNvARLz7m86MIB3cD8arpbLFGA?download=1&e=0HHwfQ';
+
+    let statsCaricate = false;
+    let wbCache = null; // Workbook in cache: scaricato una volta sola per pagina
+
+    // ─────────────────────────────────────
+    // Scarica e parsa il file Excel (una volta sola, poi usa cache)
+    // ─────────────────────────────────────
+    async function getWorkbook() {
+        if (wbCache) return wbCache;
+        const resp = await fetch(EXCEL_URL);
+        if (!resp.ok) throw new Error('Impossibile scaricare il file Excel da OneDrive');
+        const buf = await resp.arrayBuffer();
+        wbCache = XLSX.read(buf, { type: 'array', cellDates: true });
+        return wbCache;
+    }
+
+    // ─────────────────────────────────────
+    // HELPER: foglio Excel → array di oggetti {colonna: valore}
+    // ─────────────────────────────────────
+    function sheetToRows(wb, sheetName) {
+        const ws = wb.Sheets[sheetName];
+        if (!ws) throw new Error(`Foglio "${sheetName}" non trovato`);
+        // header:1 → prima riga come intestazioni, defval:'' → celle vuote = stringa vuota
+        return XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    }
+
+    // ─────────────────────────────────────
+    // HELPER: formatta una data Excel in DD/MM/YYYY
+    // ─────────────────────────────────────
+    function formatDate(val) {
+        if (!val) return '';
+        if (val instanceof Date) {
+            const d = String(val.getDate()).padStart(2,'0');
+            const m = String(val.getMonth()+1).padStart(2,'0');
+            return `${d}/${m}/${val.getFullYear()}`;
+        }
+        return String(val);
+    }
+
+    // ─────────────────────────────────────
+    // HELPER: converte valore cella in stringa pulita
+    // numeri float (1000.0) → interi ("1000"), null → ""
+    // ─────────────────────────────────────
+    function cellStr(val) {
+        if (val === null || val === undefined || val === '') return '';
+        if (typeof val === 'number') return Math.round(val).toString();
+        if (val instanceof Date) return formatDate(val);
+        return String(val).trim();
     }
 
     function escapeHTML(str) {
         return String(str)
-            .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-            .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
     }
 
     function formattaNome(str) {
         return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
     }
 
-    /* ───── Decodifica valore cella giocatore ───── */
+    // ─────────────────────────────────────
+    // Decodifica valore cella giocatore
+    // pos 0=gol, 1=assist, 2=gialli, 3=rossi
+    // ─────────────────────────────────────
     function decodificaContributo(val) {
-        const v = String(val).trim();
-
-        // Cella vuota = assente
-        if (v === '') return null;
-
-        // Formato: stringa di massimo 4 cifre
-        // posizione 0 (1ª cifra da sinistra) = gol
-        // posizione 1 (2ª cifra da sinistra) = assist
-        // posizione 2 (3ª cifra da sinistra) = gialli
-        // posizione 3 (4ª cifra da sinistra) = rossi
-        // Es: "2301" → 2 gol, 3 assist, 0 gialli, 1 rosso
-        // Es: "0"    → presente, nessun contributo
-        // Es: "1"    → 1 gol
-        // Es: "01"   → 0 gol, 1 assist
-        // Es: "03"   → 0 gol, 3 assist
-
-        const cifre = v.replace(/\D/g, ''); // prende solo le cifre
-        if (!cifre) return { presente: true, gol: 0, assist: 0, gialli: 0, rossi: 0 };
-
-        const gol    = parseInt(cifre[0] || '0', 10);
-        const assist = parseInt(cifre[1] || '0', 10);
-        const gialli = parseInt(cifre[2] || '0', 10);
-        const rossi  = parseInt(cifre[3] || '0', 10);
-
-        return { presente: true, gol, assist, gialli, rossi };
+        const v = cellStr(val);
+        if (v === '' || v.toLowerCase() === 'nan') return null;
+        const num = parseInt(parseFloat(v), 10);
+        if (isNaN(num)) return { presente: true, gol:0, assist:0, gialli:0, rossi:0 };
+        const s = String(num);
+        return {
+            presente: true,
+            gol:    parseInt(s[0]||'0', 10),
+            assist: parseInt(s[1]||'0', 10),
+            gialli: parseInt(s[2]||'0', 10),
+            rossi:  parseInt(s[3]||'0', 10),
+        };
     }
 
-    /* ───── Costruisce stringa riga tooltip ───── */
     function rigaTooltip(nome, contrib) {
         if (!contrib || !contrib.presente) return null;
         let riga = `<span style="font-weight:700">${escapeHTML(nome)}</span>`;
@@ -302,101 +339,122 @@
         return riga;
     }
 
-    /* ───── Tooltip hover con delay 1s ───── */
+    // ─────────────────────────────────────
+    // Tooltip hover con delay 1s
+    // ─────────────────────────────────────
     function attachTooltipBehavior(card) {
         let timer = null;
-
         card.addEventListener('mouseenter', () => {
             timer = setTimeout(() => card.classList.add('tooltip-visible'), 1000);
         });
-
         card.addEventListener('mouseleave', () => {
             clearTimeout(timer);
             card.classList.remove('tooltip-visible');
         });
     }
 
-    /* ───── Carica tesserati ───── */
-    function caricaTesseratiUfficiali() {
-        fetch('Elenco_Tesserati.csv?_t=' + Date.now())
-            .then(r => { if (!r.ok) throw new Error('CSV non trovato'); return r.text(); })
-            .then(data => {
-                const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
-                let staff = {
-                    presidente:    { nome:'Non definito', tel:'', mail:'' },
-                    vicepresidente:{ nome:'Non definito', tel:'', mail:'' },
-                    allenatore:    { nome:'Non definito', tel:'', mail:'' }
-                };
-                let giocatori = [];
+    // ═══════════════════════════════════════════
+    // ROSA — foglio "Tesserati e Statistiche"
+    // ═══════════════════════════════════════════
+    async function caricaTesseratiUfficiali() {
+        try {
+            const wb   = await getWorkbook();
+            const rows = sheetToRows(wb, 'Tesserati e Statistiche');
+            // rows[0] = intestazioni, rows[1..] = dati
+            // Struttura: 0=Cognome 1=Nome 2=N°Maglia 3=NomeMaglia 4=RUOLO 5=Foto 6=Dirigenza 7=Presenze ...
 
-                for (let i=1; i<righe.length; i++) {
-                    const c = righe[i].split(';');
-                    if (c.length < 8) continue;
-                    const cognome=c[0]?.trim(), nome=c[1]?.trim(), qual=c[2]?.trim()||'';
-                    const tel=c[3]?.trim()||'', dn=c[4]?.trim()||'', mail=c[5]?.trim()||'';
-                    const num=c[6]?.trim()||'', nick=c[7]?.trim()||'';
-                    if (!nome||!cognome) continue;
-                    const nc = `${formattaNome(nome)} ${formattaNome(cognome)}`;
-                    if (qual.includes('PRS')) staff.presidente     = {nome:nc,tel,mail};
-                    if (qual.includes('VPS')) staff.vicepresidente  = {nome:nc,tel,mail};
-                    if (qual.includes('DIT')) staff.allenatore      = {nome:nc,tel,mail};
-                    if (!qual.includes('DIT')) giocatori.push({
-                        cognome:formattaNome(cognome), nome:formattaNome(nome), numero:num,
-                        nickname: nick&&nick!=='-'?nick:nome, dataNascita:dn
+            let staff = {
+                presidente:     { nome:'Non definito', tel:'', mail:'' },
+                vicepresidente: { nome:'Non definito', tel:'', mail:'' },
+                allenatore:     { nome:'Non definito', tel:'', mail:'' },
+            };
+            let giocatori = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const c = rows[i];
+                const cognome   = cellStr(c[0]);
+                const nome      = cellStr(c[1]);
+                const numMaglia = cellStr(c[2]);
+                const nomeMagl  = cellStr(c[3]);
+                const ruolo     = cellStr(c[4]);
+                const dirigenza = cellStr(c[6]);
+                const presenze  = cellStr(c[7]);
+
+                if (!nome && !cognome) continue;
+
+                const nc = `${formattaNome(nome)} ${formattaNome(cognome)}`;
+
+                // Recupera tel e mail se ci sono colonne aggiuntive
+                const tel  = cellStr(c[12]||'');
+                const mail = cellStr(c[13]||'');
+
+                if (dirigenza === 'Presidente')
+                    staff.presidente = { nome:nc, tel, mail };
+                if (dirigenza === 'Vicepresidente')
+                    staff.vicepresidente = { nome:nc, tel, mail };
+                if (dirigenza === 'Allenatore')
+                    staff.allenatore = { nome:nc, tel, mail };
+
+                if (dirigenza !== 'Allenatore' && (presenze !== '' && presenze !== '0' || presenze === '0')) {
+                    giocatori.push({
+                        cognome: formattaNome(cognome),
+                        nome:    formattaNome(nome),
+                        numero:  numMaglia,
+                        nickname: nomeMagl && nomeMagl !== '-' ? nomeMagl : nome,
+                        dataNascita: '',
                     });
                 }
+            }
 
-                giocatori.sort((a,b)=>a.cognome.localeCompare(b.cognome));
+            giocatori.sort((a,b) => a.cognome.localeCompare(b.cognome));
 
-                const setStaff = (id,d) => {
-                    document.getElementById(`staff-${id}-nome`).textContent = d.nome;
-                    const et = document.getElementById(`staff-${id}-tel`);
-                    if (d.tel) { et.textContent=d.tel; et.href=`tel:${d.tel.replace(/\s+/g,'')}`; }
-                    const em = document.getElementById(`staff-${id}-mail`);
-                    if (d.mail) { em.textContent=d.mail.toLowerCase(); em.href=`mailto:${d.mail.toLowerCase()}`; }
-                };
-                setStaff('presidente',staff.presidente);
-                setStaff('vicepresidente',staff.vicepresidente);
-                setStaff('allenatore',staff.allenatore);
+            const setStaff = (id, d) => {
+                document.getElementById(`staff-${id}-nome`).textContent = d.nome;
+                const et = document.getElementById(`staff-${id}-tel`);
+                if (d.tel) { et.textContent = d.tel; et.href = `tel:${d.tel.replace(/\s+/g,'')}`; }
+                const em = document.getElementById(`staff-${id}-mail`);
+                if (d.mail) { em.textContent = d.mail.toLowerCase(); em.href = `mailto:${d.mail.toLowerCase()}`; }
+            };
+            setStaff('presidente',     staff.presidente);
+            setStaff('vicepresidente', staff.vicepresidente);
+            setStaff('allenatore',     staff.allenatore);
 
-                const cont = document.getElementById('container-rosa');
-                cont.innerHTML = '';
-                const frag = document.createDocumentFragment();
-                giocatori.forEach(g => {
-                    const row = document.createElement('div');
-                    row.className = "p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-6 hover:border-pink-300 hover:bg-white transition-all shadow-sm";
-                    const num = escapeHTML(g.numero&&g.numero!=='-'?g.numero:'--');
-                    const nick = escapeHTML(g.nickname.toUpperCase());
-                    row.innerHTML = `
-                        <div class="jersey-container">
-                            <img src="RetroMaglia.png" alt="Maglia" loading="lazy">
-                            <span class="jersey-name">${nick}</span>
-                            <span class="jersey-number">${num}</span>
-                        </div>
-                        <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
-                            <div class="font-black text-xl text-black uppercase">${escapeHTML(g.cognome)}</div>
-                            <div class="font-bold text-lg text-slate-600 uppercase">${escapeHTML(g.nome)}</div>
-                            <div class="text-sm font-mono text-slate-500 sm:ml-auto">
-                                ${g.dataNascita?`<i class="fas fa-birthday-cake mr-2 text-pink-400"></i>${escapeHTML(g.dataNascita)}`:''}
-                            </div>
-                        </div>`;
-                    frag.appendChild(row);
-                });
-                cont.appendChild(frag);
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById('container-rosa').innerHTML = '<p class="text-red-500">Errore nel caricamento dei tesserati.</p>';
+            const cont = document.getElementById('container-rosa');
+            cont.innerHTML = '';
+            const frag = document.createDocumentFragment();
+
+            giocatori.forEach(g => {
+                const row = document.createElement('div');
+                row.className = 'p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-6 hover:border-pink-300 hover:bg-white transition-all shadow-sm';
+                const num  = escapeHTML(g.numero && g.numero !== '-' ? g.numero : '--');
+                const nick = escapeHTML(g.nickname.toUpperCase());
+                row.innerHTML = `
+                    <div class="jersey-container">
+                        <img src="RetroMaglia.png" alt="Maglia" loading="lazy">
+                        <span class="jersey-name">${nick}</span>
+                        <span class="jersey-number">${num}</span>
+                    </div>
+                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                        <div class="font-black text-xl text-black uppercase">${escapeHTML(g.cognome)}</div>
+                        <div class="font-bold text-lg text-slate-600 uppercase">${escapeHTML(g.nome)}</div>
+                    </div>`;
+                frag.appendChild(row);
             });
+            cont.appendChild(frag);
+
+        } catch(err) {
+            console.error(err);
+            document.getElementById('container-rosa').innerHTML =
+                `<p class="text-red-500">Errore nel caricamento: ${escapeHTML(err.message)}</p>`;
+        }
     }
 
-    /* ───── Statistiche giocatori ───── */
-    // Nuova struttura CSV (senza colonna Foto):
-    // 0:Cognome 1:Nome 2:N°Maglia 3:NomeMaglia 4:RUOLO 5:Dirigenza 6:Presenze 7:Goals 8:Assist 9:Gialli 10:Rossi
-
-    let statsData = [];       // dati grezzi per il re-sort
-    let statsSortCol  = -1;   // colonna corrente di ordinamento
-    let statsSortAsc  = true;
+    // ═══════════════════════════════════════════
+    // STATISTICHE — foglio "Tesserati e Statistiche"
+    // ═══════════════════════════════════════════
+    let statsData    = [];
+    let statsSortCol = 0;
+    let statsSortAsc = false;
 
     function renderStatsTable() {
         const cols = [
@@ -411,8 +469,7 @@
             const active = statsSortCol === idx;
             const arrow  = active ? (statsSortAsc ? ' ▲' : ' ▼') : '';
             return `<th class="p-1.5 text-center cursor-pointer select-none hover:bg-slate-700 transition"
-                        title="${escapeHTML(col.title)}"
-                        onclick="sortStats(${idx})">${escapeHTML(col.label)}${arrow}</th>`;
+                        title="${escapeHTML(col.title)}" onclick="sortStats(${idx})">${escapeHTML(col.label)}${arrow}</th>`;
         }
 
         let html = `
@@ -452,125 +509,121 @@
             statsSortAsc = !statsSortAsc;
         } else {
             statsSortCol = colIdx;
-            statsSortAsc = false; // default: discendente per numeri, ascendente per nome
-            if (colIdx === -1) statsSortAsc = true;
+            statsSortAsc = colIdx === -1;
         }
-
         statsData.sort((a, b) => {
-            let va, vb;
             if (colIdx === -1) {
-                va = a.cog; vb = b.cog;
-                return statsSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
-            } else {
-                va = parseInt(a[keys[colIdx]], 10) || 0;
-                vb = parseInt(b[keys[colIdx]], 10) || 0;
-                return statsSortAsc ? va-vb : vb-va;
+                return statsSortAsc
+                    ? a.cog.localeCompare(b.cog)
+                    : b.cog.localeCompare(a.cog);
             }
+            const va = a[keys[colIdx]], vb = b[keys[colIdx]];
+            return statsSortAsc ? va-vb : vb-va;
         });
-
         renderStatsTable();
     };
 
-    function generaStatistiche() {
-        fetch('Statistiche1.csv?t=' + Date.now())
-            .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
-            .then(buf => {
-                const data = estraiTestoCSV(buf);
-                const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
+    async function generaStatistiche() {
+        try {
+            const wb   = await getWorkbook();
+            const rows = sheetToRows(wb, 'Tesserati e Statistiche');
 
-                statsData = [];
-                for (let i=1; i<righe.length; i++) {
-                    const c = righe[i].split(';');
-                    if (c.length < 7) continue;
-                    const pres = c[6]?.trim();
-                    // salta righe senza presenze (allenatori/dirigenti puri)
-                    if (!pres || isNaN(parseInt(pres,10))) continue;
-                    statsData.push({
-                        cog:    c[0]?.trim()||'',
-                        nom:    c[1]?.trim()||'',
-                        num:    c[2]?.trim()||'',
-                        nick:   c[3]?.trim()||c[1]?.trim()||'',
-                        ruolo:  c[4]?.trim()||'',
-                        pres:   parseInt(pres,10)||0,
-                        gol:    parseInt(c[7],10)||0,
-                        assist: parseInt(c[8],10)||0,
-                        gialli: parseInt(c[9],10)||0,
-                        rossi:  parseInt(c[10],10)||0,
-                    });
-                }
-
-                // Ordinamento iniziale: presenze decrescenti
-                statsSortCol  = 0;
-                statsSortAsc  = false;
-                statsData.sort((a,b)=>b.pres-a.pres);
-
-                renderStatsTable();
-            })
-            .catch(() => {
-                document.getElementById('tabella-stats-container').innerHTML = '<p class="text-red-500">Errore caricamento statistiche.</p>';
-            });
-    }
-
-    /* ───── Partite ───── */
-    function generaPartite() {
-        // Carica in parallelo Stagione1.csv + le due classifiche
-        Promise.all([
-            fetch('Stagione1.csv?t='   + Date.now()).then(r=>{ if(!r.ok) throw new Error(); return r.arrayBuffer(); }),
-            fetch('S1_Fase1.csv?t='    + Date.now()).then(r=>r.ok ? r.arrayBuffer() : null).catch(()=>null),
-            fetch('S1_Fase2.csv?t='    + Date.now()).then(r=>r.ok ? r.arrayBuffer() : null).catch(()=>null),
-        ])
-        .then(([bufStag, bufF1, bufF2]) => {
-
-            const data  = estraiTestoCSV(bufStag);
-            const righe = data.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
-            const header = righe[0].split(';');
-            const nomiGiocatori = header.slice(7);
-
-            /* ── Parsing classifiche ── */
-            function parseClassifica(buf) {
-                if (!buf) return [];
-                const testo = estraiTestoCSV(buf);
-                return testo.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0)
-                    .slice(1) // salta intestazione
-                    .map(r => { const c=r.split(';'); return { squadra:c[0]||'', pt:c[1]||'0', dr:c[2]||'0' }; })
-                    .sort((a,b) => parseInt(b.pt,10)-parseInt(a.pt,10) || parseInt(b.dr,10)-parseInt(a.dr,10));
+            statsData = [];
+            for (let i = 1; i < rows.length; i++) {
+                const c = rows[i];
+                const pres = parseInt(cellStr(c[7]), 10);
+                if (isNaN(pres)) continue;
+                statsData.push({
+                    cog:    cellStr(c[0]),
+                    nom:    cellStr(c[1]),
+                    num:    cellStr(c[2]),
+                    nick:   cellStr(c[3]) || cellStr(c[1]),
+                    ruolo:  cellStr(c[4]),
+                    pres,
+                    gol:    parseInt(cellStr(c[8]),  10)||0,
+                    assist: parseInt(cellStr(c[9]),  10)||0,
+                    gialli: parseInt(cellStr(c[10]), 10)||0,
+                    rossi:  parseInt(cellStr(c[11]), 10)||0,
+                });
             }
 
-            const classF1 = parseClassifica(bufF1);
-            const classF2 = parseClassifica(bufF2);
+            statsSortCol = 0;
+            statsSortAsc = false;
+            statsData.sort((a,b) => b.pres - a.pres);
+            renderStatsTable();
 
-            /* ── Raggruppamento partite per fase ── */
+        } catch(err) {
+            document.getElementById('tabella-stats-container').innerHTML =
+                `<p class="text-red-500">Errore statistiche: ${escapeHTML(err.message)}</p>`;
+        }
+    }
+
+    // ═══════════════════════════════════════════
+    // PARTITE — foglio "Dati"
+    // ═══════════════════════════════════════════
+    async function generaPartite() {
+        try {
+            const wb = await getWorkbook();
+
+            // ── Partite (foglio Dati) ──
+            const rowsDati = sheetToRows(wb, 'Dati');
+            const header   = rowsDati[0]; // nomi giocatori dalla col 6 in poi
+            const nomiGiocatori = header.slice(6).map(v => cellStr(v));
+
+            // ── Classifiche ──
+            function parseClassifica(sheetName) {
+                try {
+                    const rows = sheetToRows(wb, sheetName);
+                    return rows.slice(1)
+                        .filter(r => cellStr(r[0]))
+                        .map(r => ({
+                            squadra: cellStr(r[0]),
+                            pt:  cellStr(r[1]),
+                            gf:  cellStr(r[2]),
+                            gs:  cellStr(r[3]),
+                            dr:  cellStr(r[4]),
+                        }))
+                        .sort((a,b) => parseInt(b.pt,10)-parseInt(a.pt,10) || parseInt(b.dr,10)-parseInt(a.dr,10));
+                } catch(e) { return []; }
+            }
+
+            const classF1 = parseClassifica('Fase1');
+            const classF2 = parseClassifica('Fase2');
+
+            // ── Raggruppa per fase ──
             const fase1=[], fase2=[], playoff=[];
             const PLAYOFF_KEYS = ['ottavi','quarti','semifinale','finale','finalissima'];
 
-            for (let i=1; i<righe.length; i++) {
-                const col = righe[i].split(';');
-                const giornata = (col[0]||'').trim().toLowerCase();
-                const casa  = col[1]||'', golC=col[2]||'', golT=col[3]||'', trasf=col[4]||'', dataM=col[5]||'';
+            for (let i = 1; i < rowsDati.length; i++) {
+                const row = rowsDati[i];
+                const giornata = cellStr(row[0]).toLowerCase();
+                const casa  = cellStr(row[1]);
+                const golC  = cellStr(row[2]);
+                const golT  = cellStr(row[3]);
+                const trasf = cellStr(row[4]);
+                const dataM = formatDate(row[5]);
 
-                // righe vuote
                 if (!casa && !trasf) continue;
 
-                const obj = { giornata:col[0]||'', casa, golC, golT, trasf, dataM, col };
+                const obj = { casa, golC, golT, trasf, dataM, row };
 
-                if (PLAYOFF_KEYS.some(k=>giornata.startsWith(k))) {
+                if (PLAYOFF_KEYS.some(k => giornata.startsWith(k)))
                     playoff.push(obj);
-                } else if (giornata.startsWith('1.')) {
+                else if (giornata.startsWith('1.'))
                     fase1.push(obj);
-                } else if (giornata.startsWith('2.')) {
+                else if (giornata.startsWith('2.'))
                     fase2.push(obj);
-                }
             }
 
-            /* ── Costruisce HTML card partita ── */
+            // ── Card singola partita ──
             function cardPartita(obj, idx) {
-                const { casa, golC, golT, trasf, dataM, col } = obj;
+                const { casa, golC, golT, trasf, dataM, row } = obj;
                 const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
 
                 let borderClass='border-slate-200', bgClass='bg-white', badge='';
-                if (isBB && golC!=='' && golT!=='') {
+                if (isBB && golC !== '' && golT !== '') {
                     const gC=parseInt(golC,10), gT=parseInt(golT,10);
-                    if (!isNaN(gC)&&!isNaN(gT)) {
+                    if (!isNaN(gC) && !isNaN(gT)) {
                         const bbCasa = casa.includes('Banda Bassotti');
                         const golBB=bbCasa?gC:gT, golAvv=bbCasa?gT:gC;
                         if (golBB>golAvv)      { borderClass='border-green-400';  bgClass='bg-green-50';  badge=`<span class="text-[10px] font-black text-green-700 bg-green-100 border border-green-300 rounded-full px-1.5 py-0.5">V</span>`; }
@@ -579,16 +632,18 @@
                     }
                 } else if (!isBB) { bgClass='bg-slate-50'; }
 
-                // tooltip
-                let tooltipRighe=[];
-                for (let j=0; j<nomiGiocatori.length; j++) {
-                    const nomeG = nomiGiocatori[j]?.trim();
+                // Tooltip giocatori (col 6 in poi nel foglio, ma row[0..4] sono i campi fissi)
+                // Nel foglio Dati: 0=GIONATA 1=Casa 2=GOL_C 3=GOL_T 4=Trasf 5=Data, da 6 in poi giocatori
+                let tooltipRighe = [];
+                for (let j = 0; j < nomiGiocatori.length; j++) {
+                    const nomeG  = nomiGiocatori[j];
                     if (!nomeG) continue;
-                    const contrib = decodificaContributo(col[7+j]?.trim()||'');
-                    const riga = rigaTooltip(nomeG, contrib);
+                    const contrib = decodificaContributo(row[6+j]);
+                    const riga    = rigaTooltip(nomeG, contrib);
                     if (riga) tooltipRighe.push(riga);
                 }
-                const tooltipHtml = tooltipRighe.length>0
+
+                const tooltipHtml = tooltipRighe.length > 0
                     ? `<div class="partita-tooltip">${tooltipRighe.join('<br>')}
                            <div class="tooltip-legenda">⚽gol &nbsp;🦶assist &nbsp;🟨giallo &nbsp;🟥rosso</div>
                        </div>` : '';
@@ -607,77 +662,74 @@
                     </div>`;
             }
 
-            /* ── Costruisce HTML classifica ── */
+            // ── Classifica HTML ──
             function htmlClassifica(classifica) {
                 if (!classifica.length) return '';
+                const hasFull = classifica[0].gf !== '';
                 let t = `
-                    <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-sm w-full">
+                    <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-xs w-full">
                         <table class="w-full border-collapse">
-                            <thead>
-                                <tr class="bg-slate-800 text-white">
-                                    <th class="px-3 py-2 text-left font-black">#</th>
-                                    <th class="px-3 py-2 text-left font-black">Squadra</th>
-                                    <th class="px-3 py-2 text-center font-black">Pt</th>
-                                    <th class="px-3 py-2 text-center font-black">DR</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+                            <thead><tr class="bg-slate-800 text-white">
+                                <th class="px-2 py-2 text-left font-black">#</th>
+                                <th class="px-2 py-2 text-left font-black">Squadra</th>
+                                <th class="px-2 py-2 text-center font-black" title="Punti">Pt</th>
+                                ${hasFull ? `<th class="px-2 py-2 text-center font-black" title="Gol Fatti">GF</th>
+                                <th class="px-2 py-2 text-center font-black" title="Gol Subiti">GS</th>` : ''}
+                                <th class="px-2 py-2 text-center font-black" title="Differenza Reti">DR</th>
+                            </tr></thead><tbody>`;
                 classifica.forEach((sq, idx) => {
-                    const isBB = sq.squadra.includes('Banda Bassotti');
-                    const rowBg = isBB ? 'bg-red-50 font-black' : (idx%2===0?'bg-white':'bg-slate-50');
+                    const isBB  = sq.squadra.includes('Banda Bassotti');
+                    const rowBg = isBB ? 'bg-red-50' : (idx%2===0?'bg-white':'bg-slate-50');
+                    const nc    = isBB ? 'text-red-700 font-black' : 'text-slate-800 font-bold';
                     t += `<tr class="${rowBg}">
-                        <td class="px-3 py-1.5 text-slate-400 font-bold">${idx+1}</td>
-                        <td class="px-3 py-1.5 ${isBB?'text-red-700':'text-slate-800'} font-bold whitespace-nowrap">${escapeHTML(sq.squadra)}</td>
-                        <td class="px-3 py-1.5 text-center font-black">${escapeHTML(sq.pt)}</td>
-                        <td class="px-3 py-1.5 text-center text-slate-500">${escapeHTML(sq.dr)}</td>
+                        <td class="px-2 py-1.5 text-slate-400 font-bold">${idx+1}</td>
+                        <td class="px-2 py-1.5 ${nc} whitespace-nowrap">${escapeHTML(sq.squadra)}</td>
+                        <td class="px-2 py-1.5 text-center font-black">${escapeHTML(sq.pt)}</td>
+                        ${hasFull ? `<td class="px-2 py-1.5 text-center text-emerald-700 font-bold">${escapeHTML(sq.gf)}</td>
+                        <td class="px-2 py-1.5 text-center text-rose-600 font-bold">${escapeHTML(sq.gs)}</td>` : ''}
+                        <td class="px-2 py-1.5 text-center text-slate-500 font-bold">${escapeHTML(sq.dr)}</td>
                     </tr>`;
                 });
                 t += '</tbody></table></div>';
                 return t;
             }
 
-            /* ── Costruisce sezione fase ── */
+            // ── Sezione fase ──
             function sezioneHtml(titolo, partite, classifica, colore) {
-                const cardsHtml = partite.map((p,i)=>cardPartita(p,i)).join('');
-                const hasClassifica = classifica && classifica.length>0;
+                const cardsHtml   = partite.map((p,i) => cardPartita(p,i)).join('');
+                const hasClass    = classifica && classifica.length > 0;
                 return `
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
                             <span class="text-xs font-black uppercase tracking-widest text-${colore}-600 bg-${colore}-50 border border-${colore}-200 px-3 py-1 rounded-full">${escapeHTML(titolo)}</span>
                         </div>
-                        <div class="${hasClassifica ? 'flex flex-col lg:flex-row gap-4' : ''}">
-                            <div class="${hasClassifica ? 'flex-1 min-w-0' : ''}">
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                    ${cardsHtml}
-                                </div>
+                        <div class="${hasClass ? 'flex flex-col lg:flex-row gap-4' : ''}">
+                            <div class="${hasClass ? 'flex-1 min-w-0' : ''}">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">${cardsHtml}</div>
                             </div>
-                            ${hasClassifica ? `<div class="lg:w-64 xl:w-72 flex-shrink-0">${htmlClassifica(classifica)}</div>` : ''}
+                            ${hasClass ? `<div class="lg:w-64 xl:w-72 flex-shrink-0">${htmlClassifica(classifica)}</div>` : ''}
                         </div>
                     </div>`;
             }
 
-            /* ── Assembla tutto ── */
             let html = '';
-
             if (fase1.length)   html += sezioneHtml('Fase 1', fase1, classF1, 'blue');
-            if (fase2.length) {
-                if (fase1.length) html += '<hr class="border-slate-200 my-4">';
-                html += sezioneHtml('Fase 2', fase2, classF2, 'violet');
-            }
-            if (playoff.length) {
-                if (fase1.length||fase2.length) html += '<hr class="border-slate-200 my-4">';
-                html += sezioneHtml('Playoff', playoff, null, 'amber');
-            }
+            if (fase2.length)  { if (fase1.length)  html += '<hr class="border-slate-200 my-4">'; html += sezioneHtml('Fase 2', fase2, classF2, 'violet'); }
+            if (playoff.length){ if (fase1.length||fase2.length) html += '<hr class="border-slate-200 my-4">'; html += sezioneHtml('Playoff', playoff, null, 'amber'); }
 
             const cont = document.getElementById('tabella-partite-container');
             cont.innerHTML = html;
             cont.querySelectorAll('.partita-card').forEach(attachTooltipBehavior);
-        })
-        .catch(() => {
-            document.getElementById('tabella-partite-container').innerHTML = '<p class="text-red-500">Errore caricamento partite.</p>';
-        });
+
+        } catch(err) {
+            document.getElementById('tabella-partite-container').innerHTML =
+                `<p class="text-red-500">Errore partite: ${escapeHTML(err.message)}</p>`;
+        }
     }
 
+    // ═══════════════════════════════════════════
+    // Toggle pannello statistiche
+    // ═══════════════════════════════════════════
     function togglePannelloStats() {
         const p = document.getElementById('pannello-stats');
         const f = document.getElementById('freccia-stats');
@@ -692,6 +744,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', caricaTesseratiUfficiali);
+
 </script>
 </body>
 </html>
