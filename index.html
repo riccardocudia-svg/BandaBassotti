@@ -264,52 +264,66 @@
     // CARICA CSV STAFF E ROSA
     // ─────────────────────────────────────
     async function caricaTesserati() {
+        // Legge staff e rosa dal CSV Elenco_Tesserati.csv (tesserati attuali)
+        // Colonne CSV (sep=;): Cognome;Nome;Qualifiche;Telefono;Nato il;email;N° Maglia;Nome Maglia
+        // Qualifiche staff: "Presidente", "Vicepresidente", "Tecnico Allenatore"
         try {
             const res = await fetch('Elenco_Tesserati.csv?_t=' + Date.now());
-            if (!res.ok) throw new Error('File Elenco_Tesserati.csv non trovato');
-            // Il CSV è latin-1: leggiamo come ArrayBuffer e decidiamo la decodifica
-            const buf = await res.arrayBuffer();
+            if (!res.ok) throw new Error('File Elenco_Tesserati.csv non trovato (HTTP ' + res.status + ')');
+            const buf  = await res.arrayBuffer();
             const text = new TextDecoder('windows-1252').decode(buf);
-            const rows = parseCSV(text);
 
-            const ruoli = { 'Presidente': null, 'Vicepresidente': null, 'Tecnico Allenatore': null };
+            // Parse CSV con separatore ;
+            const linee = text.split(/\r?\n/).filter(l => l.trim());
+            const headers = linee[0].split(';').map(h => h.trim());
+            const righe = linee.slice(1).map(l => {
+                const vals = l.split(';');
+                const obj = {};
+                headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim(); });
+                return obj;
+            });
+
+            const staff     = { presidente: null, vicepresidente: null, allenatore: null };
             const giocatori = [];
 
-            rows.forEach(r => {
+            righe.forEach(r => {
                 const cognome = r['Cognome'] || '';
                 const nome    = r['Nome']    || '';
-                const qualif  = r['Qualifiche'] || '';
-                const tel     = r['Telefono'] || '';
-                const mail    = r['email']    || '';
-                const num     = r['N\u00B0 Maglia'] || r['N° Maglia'] || '';
-                const nick    = r['Nome Maglia'] || nome;
-
                 if (!cognome && !nome) return;
 
-                const nc = formattaNome(nome) + ' ' + formattaNome(cognome);
+                const qualif = (r['Qualifiche'] || '').trim();
+                const tel    = r['Telefono']    || '';
+                const mail   = r['email']       || '';
+                const num    = r['N° Maglia'] || '';
+                const nick   = r['Nome Maglia'] || nome;
+                const nc     = formattaNome(nome) + ' ' + formattaNome(cognome);
 
-                if (qualif === 'Presidente')        ruoli['Presidente']        = { nome: nc, tel, mail };
-                if (qualif === 'Vicepresidente')    ruoli['Vicepresidente']    = { nome: nc, tel, mail };
-                if (qualif === 'Tecnico Allenatore') ruoli['Tecnico Allenatore'] = { nome: nc, tel, mail };
+                if (qualif === 'Presidente')         staff.presidente     = { nome: nc, tel, mail };
+                if (qualif === 'Vicepresidente')     staff.vicepresidente = { nome: nc, tel, mail };
+                if (qualif === 'Tecnico Allenatore') staff.allenatore     = { nome: nc, tel, mail };
 
-                // tutti tranne allenatore vanno nella rosa
+                // Tutti tranne l'allenatore vanno nella rosa
                 if (qualif !== 'Tecnico Allenatore') {
-                    giocatori.push({ cognome: formattaNome(cognome), nome: formattaNome(nome), num, nick: nick || nome });
+                    giocatori.push({ cognome: formattaNome(cognome), nome: formattaNome(nome), num, nick });
                 }
             });
 
             // Popola staff
             const setStaff = (id, d) => {
-                if (!d) return;
-                document.getElementById('staff-' + id + '-nome').textContent = d.nome;
-                const et = document.getElementById('staff-' + id + '-tel');
-                if (d.tel) { et.textContent = d.tel; et.href = 'tel:' + d.tel.replace(/\s+/g,''); }
-                const em = document.getElementById('staff-' + id + '-mail');
-                if (d.mail) { em.textContent = d.mail.toLowerCase(); em.href = 'mailto:' + d.mail.toLowerCase(); }
+                const elNome = document.getElementById('staff-' + id + '-nome');
+                if (elNome) elNome.textContent = d ? d.nome : 'Non definito';
+                if (d && d.tel) {
+                    const et = document.getElementById('staff-' + id + '-tel');
+                    if (et) { et.textContent = d.tel; et.href = 'tel:' + d.tel.replace(/\s+/g, ''); }
+                }
+                if (d && d.mail) {
+                    const em = document.getElementById('staff-' + id + '-mail');
+                    if (em) { em.textContent = d.mail.toLowerCase(); em.href = 'mailto:' + d.mail.toLowerCase(); }
+                }
             };
-            setStaff('presidente',     ruoli['Presidente']);
-            setStaff('vicepresidente', ruoli['Vicepresidente']);
-            setStaff('allenatore',     ruoli['Tecnico Allenatore']);
+            setStaff('presidente',     staff.presidente);
+            setStaff('vicepresidente', staff.vicepresidente);
+            setStaff('allenatore',     staff.allenatore);
 
             // Popola rosa
             giocatori.sort((a, b) => a.cognome.localeCompare(b.cognome));
@@ -431,15 +445,21 @@
         try {
             const wb   = await getWorkbook();
             const rows = sheetToRows(wb, 'Tesserati');
+            // Struttura attuale (senza colonna Foto):
+            // 0=Cognome 1=Nome 2=N°Maglia 3=NomeMaglia 4=RUOLO 5=Dirigenza
+            // 6=Presenze 7=Goals 8=Assist 9=Gialli 10=Rossi
             statsData = [];
             for (let i = 1; i < rows.length; i++) {
-                const c    = rows[i];
-                const pres = parseInt(cellStr(c[7]), 10);
+                const c       = rows[i];
+                const dirigenza = cellStr(c[5]).toLowerCase();
+                // Escludi allenatori e chi ha presenze non numeriche
+                if (dirigenza === 'allenatore') continue;
+                const pres = parseInt(cellStr(c[6]), 10);
                 if (isNaN(pres)) continue;
-                const gol    = parseInt(cellStr(c[8]),  10);
-                const assist = parseInt(cellStr(c[9]),  10);
-                const gialli = parseInt(cellStr(c[10]), 10);
-                const rossi  = parseInt(cellStr(c[11]), 10);
+                const gol    = parseInt(cellStr(c[7]),  10);
+                const assist = parseInt(cellStr(c[8]),  10);
+                const gialli = parseInt(cellStr(c[9]),  10);
+                const rossi  = parseInt(cellStr(c[10]), 10);
                 statsData.push({
                     cog:    cellStr(c[0]), nom: cellStr(c[1]),
                     num:    cellStr(c[2]), nick: cellStr(c[3]) || cellStr(c[1]),
