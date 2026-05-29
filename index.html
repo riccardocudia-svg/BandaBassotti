@@ -430,7 +430,7 @@
     async function generaStatistiche() {
         try {
             const wb   = await getWorkbook();
-            const rows = sheetToRows(wb, 'Tesserati e Statistiche');
+            const rows = sheetToRows(wb, 'Tesserati');
             statsData = [];
             for (let i = 1; i < rows.length; i++) {
                 const c    = rows[i];
