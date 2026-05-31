@@ -10,23 +10,22 @@
         .jersey-container { position:relative; display:inline-block; width:100px; flex-shrink:0; }
         .jersey-container img { width:100%; height:auto; display:block; }
         .jersey-name {
-            position:absolute; top:12%; left:50%; transform:translateX(-50%);
+            position:absolute; top:25%; left:50%; transform:translateX(-50%);
             color:#000; font-family:'Arial Black',sans-serif; font-weight:900;
-            text-transform:uppercase; font-size:7px; letter-spacing:1px;
-            max-width:82%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-            text-shadow: 0 0 3px rgba(255,255,255,0.8);
+            text-transform:uppercase; font-size:7px; letter-spacing:0.5px;
+            max-width:80%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
         }
         .jersey-number {
-            position:absolute; top:38%; left:50%; transform:translateX(-50%);
+            position:absolute; top:40%; left:50%; transform:translateX(-50%);
             color:#000; font-family:'Arial Black',sans-serif; font-weight:900;
             font-size:24px; line-height:1;
         }
         .jersey-container-sm { width:80px; }
-        .jersey-container-sm .jersey-name { font-size:6px; top:12%; }
+        .jersey-container-sm .jersey-name { font-size:6px; }
         .jersey-container-sm .jersey-number { font-size:20px; }
 
         .jersey-container-xs { width:52px; }
-        .jersey-container-xs .jersey-name { font-size:5px; top:12%; letter-spacing:0.5px; }
+        .jersey-container-xs .jersey-name { font-size:5px; }
         .jersey-container-xs .jersey-number { font-size:13px; top:38%; }
 
         #pannello-stats { transition:all 0.3s ease; }
@@ -148,21 +147,33 @@
         </div>
         <div class="space-y-4">
 
-            <!-- Stagione 2025/26 -->
-            <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 opacity-70">
-                <div class="flex items-center justify-between gap-3">
+            <!-- Stagione 2025/26 — in corso -->
+            <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 hover:border-blue-300 transition">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center space-x-3">
                         <span class="text-3xl">⏳</span>
                         <div>
-                            <h4 class="font-black text-base text-slate-700">Stagione 2025/26</h4>
-                            <p class="text-xs text-slate-500 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
+                            <h4 class="font-black text-base text-black">Stagione 2025/26</h4>
+                            <p class="text-xs text-slate-600 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
                         </div>
                     </div>
-                    <span class="bg-white border text-slate-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-inner">Senza Dati</span>
+                    <button onclick="togglePannelloStats('2526')" aria-label="Apri statistiche 2025/26"
+                            class="bg-white hover:bg-slate-100 text-black border border-slate-300 font-bold text-xs px-4 py-2.5 rounded-lg flex items-center transition shadow-sm">
+                        <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i>
+                        Dati e Statistiche
+                        <i id="freccia-stats-2526" class="fas fa-chevron-down ml-2"></i>
+                    </button>
+                </div>
+                <div id="pannello-stats-2526" class="hidden space-y-8 mt-6">
+                    <p class="text-xs text-slate-400 italic">
+                        <i class="fas fa-circle-info mr-1"></i>Passa il puntatore su una partita per vedere i dettagli dei giocatori.
+                    </p>
+                    <div id="tabella-partite-container-2526" class="space-y-4"></div>
+                    <div id="tabella-stats-container-2526" class="overflow-x-auto"></div>
                 </div>
             </div>
 
-            <!-- Stagione 2024/25 -->
+            <!-- Stagione 2024/25 — completata -->
             <div class="border border-slate-200 rounded-xl bg-slate-50 p-4 hover:border-blue-300 transition">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center space-x-3">
@@ -172,32 +183,25 @@
                             <p class="text-xs text-slate-600 font-medium">Campionato Provinciale CSI Bologna Calcio a 7</p>
                         </div>
                     </div>
-                    <button onclick="togglePannelloStats()" aria-label="Apri statistiche"
+                    <button onclick="togglePannelloStats('2425')" aria-label="Apri statistiche 2024/25"
                             class="bg-white hover:bg-slate-100 text-black border border-slate-300 font-bold text-xs px-4 py-2.5 rounded-lg flex items-center transition shadow-sm">
                         <i class="fas fa-chart-bar mr-1.5 text-blue-600"></i>
                         Dati e Statistiche
-                        <i id="freccia-stats" class="fas fa-chevron-down ml-2"></i>
+                        <i id="freccia-stats-2425" class="fas fa-chevron-down ml-2"></i>
                     </button>
                 </div>
-
-                <div id="pannello-stats" class="hidden space-y-8 mt-6">
-
-                    <div>
-                        <p class="text-xs text-slate-400 mb-4 italic">
-                            <i class="fas fa-circle-info mr-1"></i>Passa il puntatore su una partita per vedere i dettagli dei giocatori.
-                        </p>
-                        <div id="tabella-partite-container"></div>
-                    </div>
-
-                    <div>
-                        <div id="tabella-stats-container" class="overflow-x-auto"></div>
-                    </div>
-
+                <div id="pannello-stats-2425" class="hidden space-y-8 mt-6">
+                    <p class="text-xs text-slate-400 italic">
+                        <i class="fas fa-circle-info mr-1"></i>Passa il puntatore su una partita per vedere i dettagli dei giocatori.
+                    </p>
+                    <div id="tabella-partite-container-2425" class="space-y-4"></div>
+                    <div id="tabella-stats-container-2425" class="overflow-x-auto"></div>
                 </div>
             </div>
 
         </div>
     </div>
+
 
     <!-- STAFF -->
     <div class="border border-slate-200 rounded-2xl p-6 bg-white shadow-sm border-l-8 border-red-600 space-y-6">
@@ -248,72 +252,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 
-    // ─── URL download diretto OneDrive ───
-    // Per aggiornare: sostituisci solo questa riga con il nuovo link
-    const ONEDRIVE_URL = 'https://1drv.ms/x/c/2de7b15a42d77acc/IQCZtrM_7LxNQ6KmcXJxbxNvARLz7m86MIB3cD8arpbLFGA?download=1&e=0HHwfQ';
+    // ═══════════════════════════════════════════
+    // CONFIGURAZIONE FILE — modifica solo qui
+    // ═══════════════════════════════════════════
+    const TESSERATI_CSV = 'Elenco_Tesserati.csv';   // Staff e Rosa
+    const EXCEL_2425    = 'Stagione 24-25.xlsx';     // Stagione 2024/25
+    const EXCEL_2526    = 'Stagione 25-26.xlsx';     // Stagione 2025/26 (carica su GitHub quando disponibile)
 
-    let statsCaricate = false;
-    let wbCache = null;
+    let statsCaricate = {};   // { '2425': bool, '2526': bool }
+    let wbCache       = {};   // { filename: workbook }
 
     // ─────────────────────────────────────
-    // Scarica e parsa il file Excel
-    // Prova 3 proxy in sequenza — se uno fallisce usa il prossimo
+    // Scarica e parsa un file Excel (con cache per sessione)
     // ─────────────────────────────────────
-    async function getWorkbook() {
-        if (wbCache) return wbCache;
-
-        const proxies = [
-            // Proxy 1: allorigins — restituisce base64 in JSON
-            async () => {
-                const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(ONEDRIVE_URL);
-                const r = await fetch(url);
-                if (!r.ok) throw new Error('allorigins fallito');
-                const buf = await r.arrayBuffer();
-                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
-            },
-            // Proxy 2: corsproxy.io
-            async () => {
-                const url = 'https://corsproxy.io/?' + encodeURIComponent(ONEDRIVE_URL);
-                const r = await fetch(url);
-                if (!r.ok) throw new Error('corsproxy fallito');
-                const buf = await r.arrayBuffer();
-                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
-            },
-            // Proxy 3: thingproxy
-            async () => {
-                const url = 'https://thingproxy.freeboard.io/fetch/' + ONEDRIVE_URL;
-                const r = await fetch(url);
-                if (!r.ok) throw new Error('thingproxy fallito');
-                const buf = await r.arrayBuffer();
-                return XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
-            },
-        ];
-
-        let lastErr;
-        for (const tryProxy of proxies) {
-            try {
-                wbCache = await tryProxy();
-                return wbCache;
-            } catch(e) {
-                lastErr = e;
-                console.warn('Proxy fallito, provo il prossimo...', e.message);
-            }
-        }
-        throw new Error('Tutti i proxy hanno fallito. Controlla la connessione o il link OneDrive. Dettaglio: ' + lastErr.message);
+    async function getWorkbook(filename) {
+        if (wbCache[filename]) return wbCache[filename];
+        const resp = await fetch(filename + '?t=' + Date.now());
+        if (!resp.ok) throw new Error(`File "${filename}" non trovato su GitHub`);
+        const buf = await resp.arrayBuffer();
+        wbCache[filename] = XLSX.read(new Uint8Array(buf), { type: 'array', cellDates: true });
+        return wbCache[filename];
     }
 
     // ─────────────────────────────────────
-    // HELPER: foglio Excel → array di oggetti {colonna: valore}
+    // HELPER: foglio Excel → array di righe (prima riga = intestazioni)
     // ─────────────────────────────────────
     function sheetToRows(wb, sheetName) {
         const ws = wb.Sheets[sheetName];
         if (!ws) throw new Error(`Foglio "${sheetName}" non trovato`);
-        // header:1 → prima riga come intestazioni, defval:'' → celle vuote = stringa vuota
         return XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
     }
 
     // ─────────────────────────────────────
-    // HELPER: formatta una data Excel in DD/MM/YYYY
+    // HELPER: formatta data Excel → DD/MM/YYYY
     // ─────────────────────────────────────
     function formatDate(val) {
         if (!val) return '';
@@ -326,8 +297,7 @@
     }
 
     // ─────────────────────────────────────
-    // HELPER: converte valore cella in stringa pulita
-    // numeri float (1000.0) → interi ("1000"), null → ""
+    // HELPER: valore cella → stringa pulita (float→int, null→"")
     // ─────────────────────────────────────
     function cellStr(val) {
         if (val === null || val === undefined || val === '') return '';
@@ -343,18 +313,18 @@
     }
 
     function formattaNome(str) {
-        return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        return String(str).toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
     }
 
     // ─────────────────────────────────────
-    // Decodifica valore cella giocatore
-    // pos 0=gol, 1=assist, 2=gialli, 3=rossi
+    // Decodifica contributo giocatore in una partita
+    // Formato: stringa 1-4 cifre  → pos0=gol pos1=assist pos2=gialli pos3=rossi
     // ─────────────────────────────────────
     function decodificaContributo(val) {
         const v = cellStr(val);
         if (v === '' || v.toLowerCase() === 'nan') return null;
         const num = parseInt(parseFloat(v), 10);
-        if (isNaN(num)) return { presente: true, gol:0, assist:0, gialli:0, rossi:0 };
+        if (isNaN(num)) return { presente:true, gol:0, assist:0, gialli:0, rossi:0 };
         const s = String(num);
         return {
             presente: true,
@@ -367,12 +337,12 @@
 
     function rigaTooltip(nome, contrib) {
         if (!contrib || !contrib.presente) return null;
-        let riga = `<span style="font-weight:700">${escapeHTML(nome)}</span>`;
-        riga += ' ⚽'.repeat(contrib.gol);
-        riga += ' 🦶'.repeat(contrib.assist);
-        riga += ' 🟨'.repeat(contrib.gialli);
-        riga += ' 🟥'.repeat(contrib.rossi);
-        return riga;
+        let r = `<span style="font-weight:700">${escapeHTML(nome)}</span>`;
+        r += ' ⚽'.repeat(contrib.gol);
+        r += ' 🦶'.repeat(contrib.assist);
+        r += ' 🟨'.repeat(contrib.gialli);
+        r += ' 🟥'.repeat(contrib.rossi);
+        return r;
     }
 
     // ─────────────────────────────────────
@@ -390,15 +360,16 @@
     }
 
     // ═══════════════════════════════════════════
-    // ROSA — foglio "Tesserati"
+    // STAFF & ROSA — da Elenco_Tesserati.csv
+    // Struttura CSV: Cognome;Nome;Qualifiche;Telefono;DataNascita;Email;NumeroMaglia;NomeMaglia
     // ═══════════════════════════════════════════
     async function caricaTesseratiUfficiali() {
         try {
-            const wb   = await getWorkbook();
-            // Il foglio si chiama "Tesserati"
-            const rows = sheetToRows(wb, 'Tesserati');
-            // rows[0] = intestazioni: Cognome Nome N°Maglia NomeMaglia RUOLO Dirigenza Presenze Goals Assist Gialli Rossi
-            // indici:                    0      1      2         3       4       5         6       7      8      9     10
+            const resp = await fetch(TESSERATI_CSV + '?t=' + Date.now());
+            if (!resp.ok) throw new Error('File Elenco_Tesserati.csv non trovato');
+            const text = await resp.text();
+
+            const righe = text.split(/\r?\n/).map(r=>r.trim()).filter(r=>r.length>0);
 
             let staff = {
                 presidente:     { nome:'Non definito', tel:'', mail:'' },
@@ -407,40 +378,37 @@
             };
             let giocatori = [];
 
-            for (let i = 1; i < rows.length; i++) {
-                const c = rows[i];
-                const cognome   = cellStr(c[0]);
-                const nome      = cellStr(c[1]);
-                const numMaglia = cellStr(c[2]);
-                const nomeMagl  = cellStr(c[3]);
-                const ruolo     = cellStr(c[4]);
-                const dirigenza = cellStr(c[5]);
-                const presenze  = cellStr(c[6]);
-
+            for (let i = 1; i < righe.length; i++) {
+                const c = righe[i].split(';');
+                if (c.length < 6) continue;
+                const cognome = c[0]?.trim()||'';
+                const nome    = c[1]?.trim()||'';
+                const qual    = c[2]?.trim()||'';
+                const tel     = c[3]?.trim()||'';
+                const dn      = c[4]?.trim()||'';
+                const mail    = c[5]?.trim()||'';
+                const numMag  = c[6]?.trim()||'';
+                const nomeMag = c[7]?.trim()||'';
                 if (!nome && !cognome) continue;
 
                 const nc = `${formattaNome(nome)} ${formattaNome(cognome)}`;
+                if (qual.includes('PRS')) staff.presidente     = { nome:nc, tel, mail };
+                if (qual.includes('VPS')) staff.vicepresidente = { nome:nc, tel, mail };
+                if (qual.includes('DIT')) staff.allenatore     = { nome:nc, tel, mail };
 
-                if (dirigenza === 'Presidente')
-                    staff.presidente = { nome:nc, tel:'', mail:'' };
-                if (dirigenza === 'Vicepresidente')
-                    staff.vicepresidente = { nome:nc, tel:'', mail:'' };
-                if (dirigenza === 'Allenatore' && staff.allenatore.nome === 'Non definito')
-                    staff.allenatore = { nome:nc, tel:'', mail:'' };
-
-                // Includi in rosa: chi non è solo allenatore e ha almeno una presenza (o è tesserato)
-                if (dirigenza !== 'Allenatore') {
+                if (!qual.includes('DIT')) {
                     giocatori.push({
-                        cognome: formattaNome(cognome),
-                        nome:    formattaNome(nome),
-                        numero:  numMaglia,
-                        nickname: nomeMagl && nomeMagl !== '-' ? nomeMagl : nome,
+                        cognome:  formattaNome(cognome),
+                        nome:     formattaNome(nome),
+                        numero:   numMag,
+                        nickname: nomeMag && nomeMag !== '-' ? nomeMag : nome,
                     });
                 }
             }
 
             giocatori.sort((a,b) => a.cognome.localeCompare(b.cognome));
 
+            // Popola staff
             const setStaff = (id, d) => {
                 document.getElementById(`staff-${id}-nome`).textContent = d.nome;
                 const et = document.getElementById(`staff-${id}-tel`);
@@ -452,10 +420,10 @@
             setStaff('vicepresidente', staff.vicepresidente);
             setStaff('allenatore',     staff.allenatore);
 
+            // Popola rosa
             const cont = document.getElementById('container-rosa');
             cont.innerHTML = '';
             const frag = document.createDocumentFragment();
-
             giocatori.forEach(g => {
                 const row = document.createElement('div');
                 row.className = 'p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-6 hover:border-pink-300 hover:bg-white transition-all shadow-sm';
@@ -478,33 +446,36 @@
         } catch(err) {
             console.error(err);
             document.getElementById('container-rosa').innerHTML =
-                `<p class="text-red-500">Errore nel caricamento: ${escapeHTML(err.message)}</p>`;
+                `<p class="text-red-500">Errore tesserati: ${escapeHTML(err.message)}</p>`;
+            ['presidente','vicepresidente','allenatore'].forEach(id => {
+                document.getElementById(`staff-${id}-nome`).textContent = 'Errore caricamento';
+            });
         }
     }
 
     // ═══════════════════════════════════════════
-    // STATISTICHE — foglio "Tesserati"
+    // STATISTICHE GIOCATORI — foglio "Tesserati e Statistiche"
+    // Struttura: 0=Cognome 1=Nome 2=N°Maglia 3=NomeMaglia 4=RUOLO 5=Foto 6=Dirigenza 7=Presenze 8=Gol 9=Assist 10=Gialli 11=Rossi
     // ═══════════════════════════════════════════
     let statsData    = [];
     let statsSortCol = 0;
     let statsSortAsc = false;
 
-    function renderStatsTable() {
+    function renderStatsTable(cont) {
+        if (!cont) cont = document.getElementById('tabella-stats-container-2425');
         const cols = [
-            { key:'pres',   label:'Pres',  title:'Presenze',          cls:'text-center font-mono' },
-            { key:'gol',    label:'⚽',    title:'Gol',               cls:'text-center text-red-600 font-black' },
-            { key:'assist', label:'🦶',    title:'Assist',            cls:'text-center text-blue-600 font-bold' },
-            { key:'gialli', label:'🟨',    title:'Cartellini gialli', cls:'text-center text-yellow-500 font-bold' },
-            { key:'rossi',  label:'🟥',    title:'Cartellini rossi',  cls:'text-center text-red-700 font-bold' },
+            { key:'pres',   label:'Pres', title:'Presenze',          cls:'text-center font-mono' },
+            { key:'gol',    label:'⚽',   title:'Gol',               cls:'text-center text-red-600 font-black' },
+            { key:'assist', label:'🦶',   title:'Assist',            cls:'text-center text-blue-600 font-bold' },
+            { key:'gialli', label:'🟨',   title:'Cartellini gialli', cls:'text-center text-yellow-500 font-bold' },
+            { key:'rossi',  label:'🟥',   title:'Cartellini rossi',  cls:'text-center text-red-700 font-bold' },
         ];
-
         function thBtn(idx, col) {
             const active = statsSortCol === idx;
             const arrow  = active ? (statsSortAsc ? ' ▲' : ' ▼') : '';
             return `<th class="p-1.5 text-center cursor-pointer select-none hover:bg-slate-700 transition"
                         title="${escapeHTML(col.title)}" onclick="sortStats(${idx})">${escapeHTML(col.label)}${arrow}</th>`;
         }
-
         let html = `
             <table class="stats-table text-left text-xs w-full">
                 <thead><tr class="bg-slate-900 text-white">
@@ -513,7 +484,6 @@
                     <th class="p-1.5 text-center">Ruolo</th>
                     ${cols.map((c,i)=>thBtn(i,c)).join('')}
                 </tr></thead><tbody>`;
-
         statsData.forEach((p, i) => {
             const bg = i%2===0 ? 'bg-white' : 'bg-slate-50';
             html += `<tr class="${bg} hover:bg-blue-50 transition">
@@ -531,45 +501,31 @@
                 ${cols.map(c=>`<td class="p-1.5 border border-slate-200 ${c.cls}">${escapeHTML(String(p[c.key]))}</td>`).join('')}
             </tr>`;
         });
-
         html += '</tbody></table>';
-        document.getElementById('tabella-stats-container').innerHTML = html;
+        cont.innerHTML = html;
     }
 
     window.sortStats = function(colIdx) {
         const keys = ['pres','gol','assist','gialli','rossi'];
-        if (statsSortCol === colIdx) {
-            statsSortAsc = !statsSortAsc;
-        } else {
-            statsSortCol = colIdx;
-            statsSortAsc = colIdx === -1;
-        }
-        statsData.sort((a, b) => {
-            if (colIdx === -1) {
-                return statsSortAsc
-                    ? a.cog.localeCompare(b.cog)
-                    : b.cog.localeCompare(a.cog);
-            }
+        if (statsSortCol === colIdx) { statsSortAsc = !statsSortAsc; }
+        else { statsSortCol = colIdx; statsSortAsc = colIdx === -1; }
+        statsData.sort((a,b) => {
+            if (colIdx === -1) return statsSortAsc ? a.cog.localeCompare(b.cog) : b.cog.localeCompare(a.cog);
             const va = a[keys[colIdx]], vb = b[keys[colIdx]];
             return statsSortAsc ? va-vb : vb-va;
         });
         renderStatsTable();
     };
 
-    async function generaStatistiche() {
+    async function generaStatistiche(excelFile, stagione) {
+        const cont = document.getElementById(`tabella-stats-container-${stagione}`);
         try {
-            const wb   = await getWorkbook();
-            // Il foglio si chiama "Tesserati"
-            // Colonne: 0=Cognome 1=Nome 2=N°Maglia 3=NomeMaglia 4=RUOLO 5=Dirigenza 6=Presenze 7=Goals 8=Assist 9=Gialli 10=Rossi
-            const rows = sheetToRows(wb, 'Tesserati');
-
-            statsData = [];
+            const wb   = await getWorkbook(excelFile);
+            const rows = sheetToRows(wb, 'Tesserati e Statistiche');
+            statsData  = [];
             for (let i = 1; i < rows.length; i++) {
-                const c = rows[i];
-                const dirigenza = cellStr(c[5]);
-                // Escludi allenatori puri
-                if (dirigenza === 'Allenatore') continue;
-                const pres = parseInt(cellStr(c[6]), 10);
+                const c    = rows[i];
+                const pres = parseInt(cellStr(c[7]), 10);
                 if (isNaN(pres)) continue;
                 statsData.push({
                     cog:    cellStr(c[0]),
@@ -578,37 +534,32 @@
                     nick:   cellStr(c[3]) || cellStr(c[1]),
                     ruolo:  cellStr(c[4]),
                     pres,
-                    gol:    parseInt(cellStr(c[7]),  10)||0,
-                    assist: parseInt(cellStr(c[8]),  10)||0,
-                    gialli: parseInt(cellStr(c[9]),  10)||0,
-                    rossi:  parseInt(cellStr(c[10]), 10)||0,
+                    gol:    parseInt(cellStr(c[8]),  10)||0,
+                    assist: parseInt(cellStr(c[9]),  10)||0,
+                    gialli: parseInt(cellStr(c[10]), 10)||0,
+                    rossi:  parseInt(cellStr(c[11]), 10)||0,
                 });
             }
-
-            statsSortCol = 0;
-            statsSortAsc = false;
+            statsSortCol = 0; statsSortAsc = false;
             statsData.sort((a,b) => b.pres - a.pres);
-            renderStatsTable();
-
+            renderStatsTable(cont);
         } catch(err) {
-            document.getElementById('tabella-stats-container').innerHTML =
-                `<p class="text-red-500">Errore statistiche: ${escapeHTML(err.message)}</p>`;
+            cont.innerHTML = `<p class="text-red-500">Errore statistiche: ${escapeHTML(err.message)}</p>`;
         }
     }
 
     // ═══════════════════════════════════════════
     // PARTITE — foglio "Dati"
     // ═══════════════════════════════════════════
-    async function generaPartite() {
+    async function generaPartite(excelFile, stagione) {
+        const cont = document.getElementById(`tabella-partite-container-${stagione}`);
         try {
-            const wb = await getWorkbook();
+            const wb = await getWorkbook(excelFile);
 
-            // ── Partite (foglio Dati) ──
-            const rowsDati = sheetToRows(wb, 'Dati');
-            const header   = rowsDati[0]; // nomi giocatori dalla col 6 in poi
+            const rowsDati      = sheetToRows(wb, 'Dati');
+            const header        = rowsDati[0];
             const nomiGiocatori = header.slice(6).map(v => cellStr(v));
 
-            // ── Classifiche ──
             function parseClassifica(sheetName) {
                 try {
                     const rows = sheetToRows(wb, sheetName);
@@ -616,10 +567,10 @@
                         .filter(r => cellStr(r[0]))
                         .map(r => ({
                             squadra: cellStr(r[0]),
-                            pt:  cellStr(r[1]),
-                            gf:  cellStr(r[2]),
-                            gs:  cellStr(r[3]),
-                            dr:  cellStr(r[4]),
+                            pt: cellStr(r[1]),
+                            gf: cellStr(r[2]),
+                            gs: cellStr(r[3]),
+                            dr: cellStr(r[4]),
                         }))
                         .sort((a,b) => parseInt(b.pt,10)-parseInt(a.pt,10) || parseInt(b.dr,10)-parseInt(a.dr,10));
                 } catch(e) { return []; }
@@ -628,57 +579,47 @@
             const classF1 = parseClassifica('Fase1');
             const classF2 = parseClassifica('Fase2');
 
-            // ── Raggruppa per fase ──
             const fase1=[], fase2=[], playoff=[];
             const PLAYOFF_KEYS = ['ottavi','quarti','semifinale','finale','finalissima'];
 
             for (let i = 1; i < rowsDati.length; i++) {
-                const row = rowsDati[i];
-                const giornata = cellStr(row[0]).toLowerCase();
-                const casa  = cellStr(row[1]);
-                const golC  = cellStr(row[2]);
-                const golT  = cellStr(row[3]);
-                const trasf = cellStr(row[4]);
-                const dataM = formatDate(row[5]);
-
+                const row  = rowsDati[i];
+                const gior = cellStr(row[0]).toLowerCase();
+                const casa = cellStr(row[1]);
+                const golC = cellStr(row[2]);
+                const golT = cellStr(row[3]);
+                const trasf= cellStr(row[4]);
+                const data = formatDate(row[5]);
                 if (!casa && !trasf) continue;
-
-                const obj = { casa, golC, golT, trasf, dataM, row };
-
-                if (PLAYOFF_KEYS.some(k => giornata.startsWith(k)))
-                    playoff.push(obj);
-                else if (giornata.startsWith('1.'))
-                    fase1.push(obj);
-                else if (giornata.startsWith('2.'))
-                    fase2.push(obj);
+                const obj  = { casa, golC, golT, trasf, data, row };
+                if (PLAYOFF_KEYS.some(k => gior.startsWith(k))) playoff.push(obj);
+                else if (gior.startsWith('1.'))                  fase1.push(obj);
+                else if (gior.startsWith('2.'))                  fase2.push(obj);
             }
 
-            // ── Card singola partita ──
             function cardPartita(obj, idx) {
-                const { casa, golC, golT, trasf, dataM, row } = obj;
+                const { casa, golC, golT, trasf, data, row } = obj;
                 const isBB = casa.includes('Banda Bassotti') || trasf.includes('Banda Bassotti');
-
                 let borderClass='border-slate-200', bgClass='bg-white', badge='';
                 if (isBB && golC !== '' && golT !== '') {
                     const gC=parseInt(golC,10), gT=parseInt(golT,10);
                     if (!isNaN(gC) && !isNaN(gT)) {
                         const bbCasa = casa.includes('Banda Bassotti');
                         const golBB=bbCasa?gC:gT, golAvv=bbCasa?gT:gC;
-                        if (golBB>golAvv)      { borderClass='border-green-400';  bgClass='bg-green-50';  badge=`<span class="text-[10px] font-black text-green-700 bg-green-100 border border-green-300 rounded-full px-1.5 py-0.5">V</span>`; }
-                        else if (golBB<golAvv) { borderClass='border-red-400';    bgClass='bg-red-50';    badge=`<span class="text-[10px] font-black text-red-700 bg-red-100 border border-red-300 rounded-full px-1.5 py-0.5">S</span>`; }
-                        else                   { borderClass='border-slate-300';  bgClass='bg-slate-100'; badge=`<span class="text-[10px] font-black text-slate-500 bg-slate-200 border border-slate-300 rounded-full px-1.5 py-0.5">P</span>`; }
+                        if (golBB>golAvv)      { borderClass='border-green-400'; bgClass='bg-green-50';  badge=`<span class="text-[10px] font-black text-green-700 bg-green-100 border border-green-300 rounded-full px-1.5 py-0.5">V</span>`; }
+                        else if (golBB<golAvv) { borderClass='border-red-400';   bgClass='bg-red-50';    badge=`<span class="text-[10px] font-black text-red-700 bg-red-100 border border-red-300 rounded-full px-1.5 py-0.5">S</span>`; }
+                        else                   { borderClass='border-slate-300'; bgClass='bg-slate-100'; badge=`<span class="text-[10px] font-black text-slate-500 bg-slate-200 border border-slate-300 rounded-full px-1.5 py-0.5">P</span>`; }
                     }
                 } else if (!isBB) { bgClass='bg-slate-50'; }
 
                 let tooltipRighe = [];
                 for (let j = 0; j < nomiGiocatori.length; j++) {
-                    const nomeG  = nomiGiocatori[j];
+                    const nomeG = nomiGiocatori[j];
                     if (!nomeG) continue;
                     const contrib = decodificaContributo(row[6+j]);
                     const riga    = rigaTooltip(nomeG, contrib);
                     if (riga) tooltipRighe.push(riga);
                 }
-
                 const tooltipHtml = tooltipRighe.length > 0
                     ? `<div class="partita-tooltip">${tooltipRighe.join('<br>')}
                            <div class="tooltip-legenda">⚽gol &nbsp;🦶assist &nbsp;🟨giallo &nbsp;🟥rosso</div>
@@ -688,7 +629,7 @@
                     <div class="partita-card border ${borderClass} ${bgClass} p-3 rounded-xl" data-idx="${idx}">
                         ${tooltipHtml}
                         <div class="flex items-center justify-between mb-1">
-                            <div class="text-[10px] text-slate-400 font-bold">${escapeHTML(dataM)}</div>
+                            <div class="text-[10px] text-slate-400 font-bold">${escapeHTML(data)}</div>
                             ${badge}
                         </div>
                         <div class="font-bold text-xs leading-snug">
@@ -698,31 +639,27 @@
                     </div>`;
             }
 
-            // ── Classifica HTML ──
             function htmlClassifica(classifica) {
                 if (!classifica.length) return '';
                 const hasFull = classifica[0].gf !== '';
-                let t = `
-                    <div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-xs w-full">
-                        <table class="w-full border-collapse">
-                            <thead><tr class="bg-slate-800 text-white">
-                                <th class="px-2 py-2 text-left font-black">#</th>
-                                <th class="px-2 py-2 text-left font-black">Squadra</th>
-                                <th class="px-2 py-2 text-center font-black" title="Punti">Pt</th>
-                                ${hasFull ? `<th class="px-2 py-2 text-center font-black" title="Gol Fatti">GF</th>
-                                <th class="px-2 py-2 text-center font-black" title="Gol Subiti">GS</th>` : ''}
-                                <th class="px-2 py-2 text-center font-black" title="Differenza Reti">DR</th>
-                            </tr></thead><tbody>`;
+                let t = `<div class="overflow-hidden rounded-xl border border-slate-200 shadow-sm text-xs w-full">
+                    <table class="w-full border-collapse">
+                        <thead><tr class="bg-slate-800 text-white">
+                            <th class="px-2 py-2 text-left font-black">#</th>
+                            <th class="px-2 py-2 text-left font-black">Squadra</th>
+                            <th class="px-2 py-2 text-center font-black" title="Punti">Pt</th>
+                            ${hasFull ? '<th class="px-2 py-2 text-center font-black" title="Gol Fatti">GF</th><th class="px-2 py-2 text-center font-black" title="Gol Subiti">GS</th>' : ''}
+                            <th class="px-2 py-2 text-center font-black" title="Differenza Reti">DR</th>
+                        </tr></thead><tbody>`;
                 classifica.forEach((sq, idx) => {
                     const isBB  = sq.squadra.includes('Banda Bassotti');
-                    const rowBg = isBB ? 'bg-red-50' : (idx%2===0?'bg-white':'bg-slate-50');
+                    const rowBg = isBB ? 'bg-red-50' : (idx%2===0 ? 'bg-white' : 'bg-slate-50');
                     const nc    = isBB ? 'text-red-700 font-black' : 'text-slate-800 font-bold';
                     t += `<tr class="${rowBg}">
                         <td class="px-2 py-1.5 text-slate-400 font-bold">${idx+1}</td>
                         <td class="px-2 py-1.5 ${nc} whitespace-nowrap">${escapeHTML(sq.squadra)}</td>
                         <td class="px-2 py-1.5 text-center font-black">${escapeHTML(sq.pt)}</td>
-                        ${hasFull ? `<td class="px-2 py-1.5 text-center text-emerald-700 font-bold">${escapeHTML(sq.gf)}</td>
-                        <td class="px-2 py-1.5 text-center text-rose-600 font-bold">${escapeHTML(sq.gs)}</td>` : ''}
+                        ${hasFull ? `<td class="px-2 py-1.5 text-center text-emerald-700 font-bold">${escapeHTML(sq.gf)}</td><td class="px-2 py-1.5 text-center text-rose-600 font-bold">${escapeHTML(sq.gs)}</td>` : ''}
                         <td class="px-2 py-1.5 text-center text-slate-500 font-bold">${escapeHTML(sq.dr)}</td>
                     </tr>`;
                 });
@@ -730,10 +667,9 @@
                 return t;
             }
 
-            // ── Sezione fase ──
             function sezioneHtml(titolo, partite, classifica, colore) {
-                const cardsHtml   = partite.map((p,i) => cardPartita(p,i)).join('');
-                const hasClass    = classifica && classifica.length > 0;
+                const cardsHtml = partite.map((p,i) => cardPartita(p,i)).join('');
+                const hasClass  = classifica && classifica.length > 0;
                 return `
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
@@ -752,30 +688,30 @@
             if (fase1.length)   html += sezioneHtml('Fase 1', fase1, classF1, 'blue');
             if (fase2.length)  { if (fase1.length)  html += '<hr class="border-slate-200 my-4">'; html += sezioneHtml('Fase 2', fase2, classF2, 'violet'); }
             if (playoff.length){ if (fase1.length||fase2.length) html += '<hr class="border-slate-200 my-4">'; html += sezioneHtml('Playoff', playoff, null, 'amber'); }
+            if (!html) html = '<p class="text-slate-400 text-sm italic">Nessuna partita ancora inserita.</p>';
 
-            const cont = document.getElementById('tabella-partite-container');
             cont.innerHTML = html;
             cont.querySelectorAll('.partita-card').forEach(attachTooltipBehavior);
 
         } catch(err) {
-            document.getElementById('tabella-partite-container').innerHTML =
-                `<p class="text-red-500">Errore partite: ${escapeHTML(err.message)}</p>`;
+            cont.innerHTML = `<p class="text-red-500">Errore partite: ${escapeHTML(err.message)}</p>`;
         }
     }
 
     // ═══════════════════════════════════════════
-    // Toggle pannello statistiche
+    // Toggle pannello statistiche — accetta la stagione ('2425' o '2526')
     // ═══════════════════════════════════════════
-    function togglePannelloStats() {
-        const p = document.getElementById('pannello-stats');
-        const f = document.getElementById('freccia-stats');
+    function togglePannelloStats(stagione) {
+        const p = document.getElementById(`pannello-stats-${stagione}`);
+        const f = document.getElementById(`freccia-stats-${stagione}`);
         p.classList.toggle('hidden');
         f.classList.toggle('fa-chevron-down');
         f.classList.toggle('fa-chevron-up');
-        if (!p.classList.contains('hidden') && !statsCaricate) {
-            generaStatistiche();
-            generaPartite();
-            statsCaricate = true;
+        if (!p.classList.contains('hidden') && !statsCaricate[stagione]) {
+            const excelFile = stagione === '2425' ? EXCEL_2425 : EXCEL_2526;
+            generaStatistiche(excelFile, stagione);
+            generaPartite(excelFile, stagione);
+            statsCaricate[stagione] = true;
         }
     }
 
@@ -784,3 +720,4 @@
 </script>
 </body>
 </html>
+
